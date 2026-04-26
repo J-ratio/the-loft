@@ -1,0 +1,23 @@
+node_modules
+dist
+.DS_Store
+*.local
+.env
+.env.local
+*.tsbuildinfo
+
+# Claude Code per-user config + dev screenshots
+.claude/
+
+# original chat-log brief (not source)
+website.md
+
+# raw 3D assets — never commit; normalized outputs go in public/models/
+assets/raw/
+
+# editor
+.vscode
+.idea
+
+# dev screenshots (Claude Code verification artifacts)
+.claude/shots/
