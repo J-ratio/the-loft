@@ -7,6 +7,13 @@ import { Desk } from './Desk'
 import { Rug } from './Rug'
 import { Plant } from './Plant'
 import { Mug } from './Mug'
+import { Chair } from './Chair'
+import { DeskLamp } from './DeskLamp'
+import { Bookshelf } from './Bookshelf'
+import { CreativeClutter } from './CreativeClutter'
+import { FairyLights } from './FairyLights'
+import { WallArt } from './WallArt'
+import { WindowView } from './WindowView'
 import { CameraRig } from './CameraRig'
 import { AnchorOverlay } from '../overlays/AnchorOverlay'
 
@@ -23,25 +30,25 @@ export function Scene() {
     <div className="fixed inset-0 bg-neutral-900">
       <Canvas
         shadows
-        camera={{ position: [2.2, 1.8, 2.4], fov: 35 }}
-        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.85 }}
+        camera={{ position: [1.9, 1.45, 2.0], fov: 38 }}
+        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.9 }}
         onPointerMissed={() => {
           // Click outside any interactive mesh → return home.
           if (activeAnchor) setActiveAnchor(null)
         }}
       >
-        {/* Hemisphere: warm sky (golden hour) over warm ground bounce. */}
-        <hemisphereLight
-          args={['#ffd98a', '#6b4a2a', 0.5]}
-        />
+        {/* Hemisphere: warm amber sky ↔ cool indigo "shadow" bounce.
+            This is what kills the monochrome-orange feel. */}
+        <hemisphereLight args={['#ffcf8a', '#2a3550', 0.55]} />
 
-        {/* Warm bounce fill — simulates sunlight reflecting off walls. */}
-        <ambientLight intensity={0.25} color="#ffcc99" />
+        {/* Very subtle ambient fill */}
+        <ambientLight intensity={0.15} color="#ffe4c4" />
 
-        {/* The sun: streaming through the window (back-right), low and warm. */}
+        {/* The sun: streaming IN THROUGH the window (back wall, right side).
+            Position places it "outside" — rays travel into the room. */}
         <directionalLight
-          position={[3.5, 3, -1]}
-          intensity={3.2}
+          position={[2.0, 2.5, -4]}
+          intensity={3.0}
           color="#ffb978"
           castShadow
           shadow-mapSize={[2048, 2048]}
@@ -52,20 +59,36 @@ export function Scene() {
           shadow-bias={-0.0005}
         />
 
-        {/* A second warm fill from the window direction at eye height,
-            no shadows — softens the shadowed side of props. */}
+        {/* Warm "bounced sun" fill at window height — softens shadows
+            on the window-facing side of props. */}
         <pointLight
-          position={[2.2, 1.6, -1.5]}
-          intensity={0.8}
+          position={[1.5, 1.6, -1.8]}
+          intensity={0.6}
           color="#ffc88a"
+          distance={5}
+        />
+
+        {/* Cool fill from the opposite (left) wall — simulates reflected
+            skylight, breaks the all-warm palette. */}
+        <pointLight
+          position={[-2.0, 1.8, 0.5]}
+          intensity={0.4}
+          color="#8aa8d6"
           distance={6}
         />
 
+        <WindowView />
         <Room />
         <Rug />
+        <Bookshelf />
         <Desk />
+        <Chair />
+        <DeskLamp />
         <Plant />
         <Mug />
+        <CreativeClutter />
+        <WallArt />
+        <FairyLights />
         <CameraRig />
       </Canvas>
 

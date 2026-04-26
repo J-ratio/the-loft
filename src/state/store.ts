@@ -18,3 +18,7 @@ export const useLoftStore = create<Store>((set) => ({
   readingSlug: null,
   setReadingSlug: (slug) => set({ readingSlug: slug }),
 }))
+
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  ;(window as unknown as { __loft?: unknown }).__loft = useLoftStore
+}
