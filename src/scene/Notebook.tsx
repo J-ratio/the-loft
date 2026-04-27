@@ -24,23 +24,23 @@ export function Notebook() {
   const reading = readingSlug ? getPost(readingSlug) : undefined
 
   return (
-    <group position={[0, 0.85, -3.15]} rotation={[0, 0.1, 0]}>
-      {/* Dark book cover underneath */}
-      <mesh castShadow position={[0, -0.003, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+    <group position={[0, 0.852, -3.15]} rotation={[0, 0.1, 0]}>
+      {/* Dark book cover, sitting just above desk surface */}
+      <mesh castShadow position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.34, 0.26]} />
         <meshStandardMaterial color="#3a2618" roughness={0.8} />
       </mesh>
 
-      {/* Spine */}
-      <mesh castShadow position={[0, 0.002, 0]}>
-        <boxGeometry args={[0.01, 0.008, 0.24]} />
+      {/* Spine — thin raised ridge between the two pages */}
+      <mesh castShadow position={[0, 0.005, 0]}>
+        <boxGeometry args={[0.01, 0.01, 0.24]} />
         <meshStandardMaterial color="#2a1810" roughness={0.7} />
       </mesh>
 
       {/* Left page */}
       <mesh
         castShadow
-        position={[-0.085, 0.006, 0]}
+        position={[-0.085, 0.003, 0]}
         rotation={[-Math.PI / 2, 0, -0.04]}
         onPointerOver={(e) => {
           e.stopPropagation()
@@ -66,7 +66,7 @@ export function Notebook() {
       {/* Right page */}
       <mesh
         castShadow
-        position={[0.085, 0.006, 0]}
+        position={[0.085, 0.003, 0]}
         rotation={[-Math.PI / 2, 0, 0.04]}
         onPointerOver={(e) => {
           e.stopPropagation()
@@ -94,7 +94,7 @@ export function Notebook() {
       {open && (
         <Html
           transform
-          position={[0, 0.012, 0]}
+          position={[0, 0.006, 0]}
           rotation={[-Math.PI / 2, 0, 0]}
           scale={0.003}
           style={{ width: '120px', pointerEvents: 'auto' }}

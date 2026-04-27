@@ -15,6 +15,9 @@ function AssetOnDesk({
   offsetZ,
   rotY,
   liftY = 0,
+  /** Per-asset Y offset to nudge visible base onto surface (some GLTF bboxes
+   *  include invisible geometry below visible meshes, making items look floaty). */
+  sinkY = 0,
 }: {
   url: string
   label: string
@@ -22,6 +25,7 @@ function AssetOnDesk({
   offsetZ: number
   rotY: number
   liftY?: number
+  sinkY?: number
 }) {
   const { scene } = useGLTF(url)
   const ref = useRef<Group>(null!)
@@ -31,7 +35,7 @@ function AssetOnDesk({
   return (
     <group
       ref={ref}
-      position={[DESK_X + offsetX, DESK_TOP_Y + liftY, DESK_Z + offsetZ]}
+      position={[DESK_X + offsetX, DESK_TOP_Y + liftY - sinkY, DESK_Z + offsetZ]}
       rotation={[0, rotY, 0]}
     >
       <primitive object={scene} />
@@ -40,22 +44,20 @@ function AssetOnDesk({
 }
 
 export const Stationery = () => (
-  // Poly Haven stationery_supplies: native pivot ~0.07m below base.
   <AssetOnDesk
     url="/models/stationery.glb"
     label="stationery"
-    offsetX={-0.5}
-    offsetZ={-0.18}
+    offsetX={-0.55}
+    offsetZ={-0.22}
     rotY={0.3}
-    liftY={0.07}
   />
 )
 export const AlarmClock = () => (
   <AssetOnDesk
     url="/models/alarm_clock.glb"
     label="alarm_clock"
-    offsetX={0.45}
-    offsetZ={-0.18}
+    offsetX={0.6}
+    offsetZ={-0.22}
     rotY={0.2}
   />
 )
@@ -63,7 +65,7 @@ export const Mug = () => (
   <AssetOnDesk
     url="/models/mug.glb"
     label="mug"
-    offsetX={-0.55}
+    offsetX={-0.65}
     offsetZ={0.05}
     rotY={-0.3}
   />
@@ -72,8 +74,8 @@ export const RubiksCube = () => (
   <AssetOnDesk
     url="/models/rubiks.glb"
     label="rubiks"
-    offsetX={0.2}
-    offsetZ={0.1}
+    offsetX={0.35}
+    offsetZ={0.12}
     rotY={0.5}
   />
 )

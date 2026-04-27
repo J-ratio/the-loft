@@ -12,7 +12,7 @@ type Props = {
  * "Off" during daytime per user.
  */
 // Native lamp pivot is 0.08m below its base. Desk top at 0.85 → lift to 0.93.
-export function DeskLamp({ position = [0.55, 0.93, -3.3] }: Props) {
+export function DeskLamp({ position = [0.7, 0.93, -3.35] }: Props) {
   const { scene } = useGLTF('/models/desk_lamp.glb')
   const ref = useRef<Group>(null!)
   useEffect(() => logBbox('desk_lamp', ref.current), [])
