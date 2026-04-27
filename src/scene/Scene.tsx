@@ -12,7 +12,8 @@ import { Mug } from './Mug'
 import { Chair } from './Chair'
 import { DeskLamp } from './DeskLamp'
 import { CreativeClutter } from './CreativeClutter'
-import { FairyLights } from './FairyLights'
+import { Stationery, Books, AlarmClock, RubberDuck } from './DeskTopProps'
+import { ArmchairPillows } from './ArmchairPillows'
 import { Corkboard } from './Corkboard'
 import { WallArt } from './WallArt'
 import { WindowView } from './WindowView'
@@ -79,13 +80,17 @@ export function Scene() {
         <Rug />
         <Desk />
         <Chair />
+        <ArmchairPillows />
         <DeskLamp />
         <Plant />
         <Mug />
+        <Stationery />
+        <Books />
+        <AlarmClock />
+        <RubberDuck />
         <CreativeClutter />
         <Corkboard />
         <WallArt />
-        <FairyLights />
         <StairStub />
         <CameraRig />
         {debug && <DebugRig />}

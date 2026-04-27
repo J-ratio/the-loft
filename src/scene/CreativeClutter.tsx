@@ -9,30 +9,6 @@ export function CreativeClutter() {
 
   return (
     <group>
-      {/* Pencil cup (back-left of desk) */}
-      <group position={[deskX - 0.55, deskY + 0.02, deskZ - 0.2]}>
-        <mesh castShadow>
-          <cylinderGeometry args={[0.055, 0.05, 0.12, 16]} />
-          <meshStandardMaterial color="#d4a67a" roughness={0.7} />
-        </mesh>
-        {[
-          { x: 0.01, z: 0.01, tilt: [0.1, 0, 0.05], color: '#d4a94b', h: 0.18 },
-          { x: -0.015, z: -0.01, tilt: [0, 0, -0.08], color: '#8b3a2a', h: 0.16 },
-          { x: 0.02, z: -0.02, tilt: [-0.05, 0, 0.1], color: '#3e5a2a', h: 0.2 },
-          { x: -0.01, z: 0.02, tilt: [0.03, 0, 0], color: '#4a3a2e', h: 0.17 },
-        ].map((p, i) => (
-          <mesh
-            key={`pencil-${i}`}
-            castShadow
-            position={[p.x, 0.05 + p.h / 2, p.z]}
-            rotation={p.tilt as [number, number, number]}
-          >
-            <cylinderGeometry args={[0.005, 0.005, p.h, 6]} />
-            <meshStandardMaterial color={p.color} roughness={0.7} />
-          </mesh>
-        ))}
-      </group>
-
       {/* Scattered paper (right side of desk, in front of lamp) */}
       {[
         { x: 0.35, z: 0.0, rot: 0.15, color: '#f5ecd8' },
@@ -110,21 +86,6 @@ export function CreativeClutter() {
         <meshStandardMaterial color="#f5ecd8" roughness={0.95} />
       </mesh>
 
-      {/* Backpack leaning on desk (right-front leg) */}
-      <group position={[0.82, 0.18, -2.7]} rotation={[0, -0.3, 0.08]}>
-        <mesh castShadow>
-          <boxGeometry args={[0.22, 0.32, 0.14]} />
-          <meshStandardMaterial color="#3a5566" roughness={0.85} />
-        </mesh>
-        <mesh castShadow position={[0, 0.17, 0]}>
-          <boxGeometry args={[0.2, 0.04, 0.13]} />
-          <meshStandardMaterial color="#2a3e4a" roughness={0.85} />
-        </mesh>
-        <mesh position={[0, -0.04, 0.072]}>
-          <boxGeometry args={[0.14, 0.12, 0.012]} />
-          <meshStandardMaterial color="#2a3e4a" roughness={0.85} />
-        </mesh>
-      </group>
     </group>
   )
 }

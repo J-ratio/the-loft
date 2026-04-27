@@ -1,43 +1,29 @@
+import { useGLTF } from '@react-three/drei'
 import { useState } from 'react'
 import { useLoftStore } from '../state/store'
 import { deskAnchor } from '../anchors'
 
 /**
- * Desk against the back wall. The notebook is the clickable anchor surface.
- * Desk faces +Z (toward camera). Chair will sit on +Z side of it.
+ * Desk against the back wall. Uses Poly Haven WoodenTable_01 (0.78m).
+ * A separate invisible hitbox over the desk top serves as the clickable
+ * anchor — we can't raycast easily against a loaded GLTF mesh tree, and
+ * brief says the desk itself is the Blog anchor.
  */
 export function Desk() {
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
   const [hovered, setHovered] = useState(false)
+  const { scene } = useGLTF('/models/desk.glb')
 
   const [x, , z] = deskAnchor.position
 
   return (
     <group position={[x, 0, z]}>
-      {/* Desk top */}
-      <mesh castShadow position={[0, 0.7, 0]}>
-        <boxGeometry args={[1.6, 0.05, 0.7]} />
-        <meshStandardMaterial color="#8a6b4a" />
-      </mesh>
+      <primitive object={scene} />
 
-      {/* Desk legs */}
-      {[
-        [-0.7, 0.35, -0.3],
-        [0.7, 0.35, -0.3],
-        [-0.7, 0.35, 0.3],
-        [0.7, 0.35, 0.3],
-      ].map(([lx, ly, lz], i) => (
-        <mesh key={i} castShadow position={[lx, ly, lz]}>
-          <boxGeometry args={[0.05, 0.7, 0.05]} />
-          <meshStandardMaterial color="#2b2b2b" />
-        </mesh>
-      ))}
-
-      {/* Notebook — the clickable anchor (on desk, slightly forward toward camera) */}
+      {/* Invisible hitbox on the desk surface — the clickable anchor.
+          Sits slightly above where the desk top should be so clicks land here. */}
       <mesh
-        castShadow
-        position={[0, 0.76, 0.18]}
-        rotation={[0, 0.08, 0]}
+        position={[0, 0.78, 0]}
         onPointerOver={(e) => {
           e.stopPropagation()
           setHovered(true)
@@ -52,13 +38,17 @@ export function Desk() {
           setActiveAnchor('desk')
         }}
       >
-        <boxGeometry args={[0.32, 0.025, 0.24]} />
+        <boxGeometry args={[1.4, 0.02, 0.7]} />
         <meshStandardMaterial
-          color={hovered ? '#f5e9c6' : '#e8d9ae'}
-          emissive={hovered ? '#d4b870' : '#000000'}
-          emissiveIntensity={hovered ? 0.35 : 0}
+          transparent
+          opacity={hovered ? 0.15 : 0}
+          color="#ffd488"
+          emissive="#ffd488"
+          emissiveIntensity={hovered ? 0.3 : 0}
         />
       </mesh>
     </group>
   )
 }
+
+useGLTF.preload('/models/desk.glb')
