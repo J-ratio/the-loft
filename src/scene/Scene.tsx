@@ -14,6 +14,7 @@ import { DeskLamp } from './DeskLamp'
 import { CreativeClutter } from './CreativeClutter'
 import { FairyLights } from './FairyLights'
 import { Corkboard } from './Corkboard'
+import { WallArt } from './WallArt'
 import { WindowView } from './WindowView'
 import { StairStub } from './StairStub'
 import { CameraRig } from './CameraRig'
@@ -83,6 +84,7 @@ export function Scene() {
         <Mug />
         <CreativeClutter />
         <Corkboard />
+        <WallArt />
         <FairyLights />
         <StairStub />
         <CameraRig />
