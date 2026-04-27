@@ -49,16 +49,17 @@ export const Stationery = () => (
     label="stationery"
     offsetX={-0.55}
     offsetZ={-0.22}
-    rotY={0.3}
+    rotY={-0.4}
   />
 )
 export const AlarmClock = () => (
+  // Flip 180° so the clock face points toward the chair (+Z), not the wall.
   <AssetOnDesk
     url="/models/alarm_clock.glb"
     label="alarm_clock"
     offsetX={0.6}
     offsetZ={-0.22}
-    rotY={0.2}
+    rotY={Math.PI + 0.2}
   />
 )
 export const Mug = () => (
@@ -67,7 +68,7 @@ export const Mug = () => (
     label="mug"
     offsetX={-0.65}
     offsetZ={0.05}
-    rotY={-0.3}
+    rotY={0}
   />
 )
 export const RubiksCube = () => (

@@ -9,7 +9,6 @@ import { Desk } from './Desk'
 import { Rug } from './Rug'
 import { Plant } from './Plant'
 import { Chair } from './Chair'
-import { DeskLamp } from './DeskLamp'
 import { Stationery, AlarmClock, Mug, RubiksCube } from './DeskTopProps'
 import { Corkboard } from './Corkboard'
 import { Notebook } from './Notebook'
@@ -76,7 +75,6 @@ export function Scene() {
         <Desk />
         <Notebook />
         <Chair />
-        <DeskLamp />
         <Plant />
         <Stationery />
         <AlarmClock />
