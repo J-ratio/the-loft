@@ -1,8 +1,8 @@
 import { useGLTF } from '@react-three/drei'
 
 /**
- * GLTF-backed props that sit on the desk top.
- * Desk center at (0, 0, -3.15), top at y=0.73 (WoodenTable_01 real top height).
+ * GLTF-backed props on the desk top.
+ * Desk at (0, 0, -3.15), desk top y ~0.73 (desk_set height 0.78 base to top).
  */
 
 const DESK_TOP_Y = 0.73
@@ -14,19 +14,8 @@ export function Stationery() {
   return (
     <primitive
       object={scene}
-      position={[DESK_X - 0.5, DESK_TOP_Y, DESK_Z - 0.18]}
+      position={[DESK_X - 0.4, DESK_TOP_Y, DESK_Z - 0.15]}
       rotation={[0, 0.3, 0]}
-    />
-  )
-}
-
-export function Books() {
-  const { scene } = useGLTF('/models/books.glb')
-  return (
-    <primitive
-      object={scene}
-      position={[DESK_X + 0.55, DESK_TOP_Y, DESK_Z - 0.22]}
-      rotation={[0, -0.2, 0]}
     />
   )
 }
@@ -36,24 +25,35 @@ export function AlarmClock() {
   return (
     <primitive
       object={scene}
-      position={[DESK_X + 0.25, DESK_TOP_Y, DESK_Z - 0.22]}
+      position={[DESK_X + 0.35, DESK_TOP_Y, DESK_Z - 0.22]}
       rotation={[0, 0.2, 0]}
     />
   )
 }
 
-export function RubberDuck() {
-  const { scene } = useGLTF('/models/duck.glb')
+export function Mug() {
+  const { scene } = useGLTF('/models/mug.glb')
   return (
     <primitive
       object={scene}
-      position={[DESK_X - 0.15, DESK_TOP_Y, DESK_Z + 0.2]}
+      position={[DESK_X - 0.55, DESK_TOP_Y, DESK_Z + 0.1]}
+      rotation={[0, -0.3, 0]}
+    />
+  )
+}
+
+export function RubiksCube() {
+  const { scene } = useGLTF('/models/rubiks.glb')
+  return (
+    <primitive
+      object={scene}
+      position={[DESK_X + 0.1, DESK_TOP_Y, DESK_Z + 0.18]}
       rotation={[0, 0.5, 0]}
     />
   )
 }
 
 useGLTF.preload('/models/stationery.glb')
-useGLTF.preload('/models/books.glb')
 useGLTF.preload('/models/alarm_clock.glb')
-useGLTF.preload('/models/duck.glb')
+useGLTF.preload('/models/mug.glb')
+useGLTF.preload('/models/rubiks.glb')

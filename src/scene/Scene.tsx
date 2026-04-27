@@ -8,18 +8,14 @@ import { Room } from './Room'
 import { Desk } from './Desk'
 import { Rug } from './Rug'
 import { Plant } from './Plant'
-import { Mug } from './Mug'
 import { Chair } from './Chair'
 import { DeskLamp } from './DeskLamp'
-import { CreativeClutter } from './CreativeClutter'
-import { Stationery, Books, AlarmClock, RubberDuck } from './DeskTopProps'
-import { ArmchairPillows } from './ArmchairPillows'
+import { Stationery, AlarmClock, Mug, RubiksCube } from './DeskTopProps'
 import { Corkboard } from './Corkboard'
-import { WallArt } from './WallArt'
+import { DreamCatcher } from './DreamCatcher'
+import { Notebook } from './Notebook'
 import { WindowView } from './WindowView'
-import { StairStub } from './StairStub'
 import { CameraRig } from './CameraRig'
-import { AnchorOverlay } from '../overlays/AnchorOverlay'
 
 /**
  * Scene root. Long narrow upper-loft (X=3.5 × Z=5), window on right wall,
@@ -79,24 +75,19 @@ export function Scene() {
         <Room />
         <Rug />
         <Desk />
+        <Notebook />
         <Chair />
-        <ArmchairPillows />
         <DeskLamp />
         <Plant />
-        <Mug />
         <Stationery />
-        <Books />
         <AlarmClock />
-        <RubberDuck />
-        <CreativeClutter />
+        <Mug />
+        <RubiksCube />
         <Corkboard />
-        <WallArt />
-        <StairStub />
+        <DreamCatcher />
         <CameraRig />
         {debug && <DebugRig />}
       </Canvas>
-
-      <AnchorOverlay />
 
       <div className="fixed top-4 left-4 z-20 text-neutral-100 pointer-events-none">
         <div className="text-xs font-mono tracking-widest text-neutral-400">

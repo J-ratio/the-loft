@@ -13,9 +13,9 @@ export const deskAnchor: Anchor = {
   label: 'JOURNAL',
   position: [0, 0.725, -3.15],
   cameraFocus: {
-    // Seated-reader pose: camera drops a bit, frames the notebook + corkboard behind.
-    position: [0, 1.35, -1.6],
-    lookAt: [0, 0.78, -3.1],
+    // Looking straight down at the open notebook from reader's POV
+    position: [0, 1.25, -2.55],
+    lookAt: [0, 0.76, -2.95],
   },
   overlay: 'blog',
 }

@@ -11,7 +11,7 @@ type Props = {
  * The import pipeline has already normalized height to 1.1m, base at y=0.
  */
 export function Plant({ position = [1.5, 0.77, -0.6] }: Props) {
-  const { scene } = useGLTF('/models/plant.glb')
+  const { scene } = useGLTF('/models/monstera.glb')
   return (
     <group position={position}>
       <primitive object={scene} />
@@ -19,4 +19,4 @@ export function Plant({ position = [1.5, 0.77, -0.6] }: Props) {
   )
 }
 
-useGLTF.preload('/models/plant.glb')
+useGLTF.preload('/models/monstera.glb')

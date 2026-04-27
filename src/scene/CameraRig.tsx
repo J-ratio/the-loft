@@ -6,7 +6,6 @@ import { getAnchor, type CameraPose } from '../anchors'
 import { isDebugMode } from '../lib/debug'
 
 // Home: camera on the left wall, looking across/down toward the window.
-// The user is "standing at the left wall" peering into the room diagonally.
 const HOME_POSE: CameraPose = {
   position: [-1.3, 1.5, 0.2],
   lookAt: [0.8, 1.3, -1.8],

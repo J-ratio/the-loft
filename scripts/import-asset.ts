@@ -1,14 +1,20 @@
 /**
- * Normalize a raw Hunyuan-generated GLB for use in the scene.
+ * Normalize a raw GLB for use in the scene.
  *
  * Usage:
  *   npx tsx scripts/import-asset.ts <input.glb> --target <target-name> --height <meters>
+ *   npx tsx scripts/import-asset.ts <input.glb> --target <target-name> --preserve-scale
  *
- * - Scales the asset so its bbox height matches <meters>.
- * - Re-centers horizontally (x/z around 0) and sets base at y=0.
- * - Dedups + prunes unused resources.
- * - Applies Draco geometry compression.
- * - Writes to public/models/<target-name>.glb.
+ * Default mode (with --height):
+ *   - Scales so bbox height matches <meters>.
+ *   - Re-centers horizontally (x/z around 0) and sets base at y=0.
+ *   - For assets with arbitrary scale (Hunyuan, Sketchfab).
+ *
+ * --preserve-scale mode:
+ *   - Keeps the asset's native scale and pivot.
+ *   - For Poly Haven and other curated sources where real-world scale is correct.
+ *
+ * All modes: Draco compression + dedup + prune. Writes to public/models/<name>.glb.
  */
 
 import { NodeIO } from '@gltf-transform/core';
@@ -21,13 +27,16 @@ import { basename, dirname, resolve } from 'node:path';
 interface Args {
   input: string;
   target: string;
-  height: number;
+  /** Target height in meters. undefined when --preserve-scale is set. */
+  height: number | undefined;
+  preserveScale: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
   const positional: string[] = [];
   let target: string | undefined;
   let height: number | undefined;
+  let preserveScale = false;
 
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -35,6 +44,8 @@ function parseArgs(argv: string[]): Args {
       target = argv[++i];
     } else if (a === '--height') {
       height = Number(argv[++i]);
+    } else if (a === '--preserve-scale') {
+      preserveScale = true;
     } else if (a === '--help' || a === '-h') {
       printUsageAndExit(0);
     } else if (a.startsWith('--')) {
@@ -46,15 +57,20 @@ function parseArgs(argv: string[]): Args {
   }
 
   const input = positional[0];
-  if (!input || !target || height === undefined || !Number.isFinite(height) || height <= 0) {
+  if (!input || !target) printUsageAndExit(1);
+  if (!preserveScale && (height === undefined || !Number.isFinite(height) || height <= 0)) {
+    console.error('Must specify --height <meters> or --preserve-scale');
     printUsageAndExit(1);
   }
 
-  return { input: input as string, target: target as string, height: height as number };
+  return { input: input as string, target: target as string, height, preserveScale };
 }
 
 function printUsageAndExit(code: number): never {
-  const msg = 'Usage: npx tsx scripts/import-asset.ts <input.glb> --target <target-name> --height <meters>';
+  const msg =
+    'Usage:\n' +
+    '  npx tsx scripts/import-asset.ts <input.glb> --target <name> --height <meters>\n' +
+    '  npx tsx scripts/import-asset.ts <input.glb> --target <name> --preserve-scale';
   if (code === 0) console.log(msg);
   else console.error(msg);
   process.exit(code);
@@ -93,16 +109,6 @@ export async function importAsset(args: Args): Promise<void> {
     process.exit(1);
   }
 
-  // Wrap existing scene roots under a single normalization node so we can
-  // apply scale and translation once without touching descendant transforms.
-  const wrapper = doc.createNode('__normalize__');
-  for (const child of scene.listChildren()) {
-    scene.removeChild(child);
-    wrapper.addChild(child);
-  }
-  scene.addChild(wrapper);
-
-  // Measure pre-normalization bounds (in world space).
   const boundsBefore = getBounds(scene);
   const sizeY = boundsBefore.max[1] - boundsBefore.min[1];
   if (!(sizeY > 0)) {
@@ -110,15 +116,26 @@ export async function importAsset(args: Args): Promise<void> {
     process.exit(1);
   }
 
-  const scale = args.height / sizeY;
-  wrapper.setScale([scale, scale, scale]);
+  if (!args.preserveScale && args.height !== undefined) {
+    // Wrap existing scene roots under a single normalization node so we can
+    // apply scale and translation once without touching descendant transforms.
+    const wrapper = doc.createNode('__normalize__');
+    for (const child of scene.listChildren()) {
+      scene.removeChild(child);
+      wrapper.addChild(child);
+    }
+    scene.addChild(wrapper);
 
-  // After scaling, recompute bounds and offset so x/z are centered at 0 and base is at y=0.
-  const boundsScaled = getBounds(scene);
-  const cx = (boundsScaled.min[0] + boundsScaled.max[0]) / 2;
-  const cz = (boundsScaled.min[2] + boundsScaled.max[2]) / 2;
-  const minY = boundsScaled.min[1];
-  wrapper.setTranslation([-cx, -minY, -cz]);
+    const scale = args.height / sizeY;
+    wrapper.setScale([scale, scale, scale]);
+
+    // After scaling, recompute bounds and offset so x/z are centered at 0 and base at y=0.
+    const boundsScaled = getBounds(scene);
+    const cx = (boundsScaled.min[0] + boundsScaled.max[0]) / 2;
+    const cz = (boundsScaled.min[2] + boundsScaled.max[2]) / 2;
+    const minY = boundsScaled.min[1];
+    wrapper.setTranslation([-cx, -minY, -cz]);
+  }
 
   // Register Draco extension on the document so it gets written out.
   doc
@@ -140,8 +157,9 @@ export async function importAsset(args: Args): Promise<void> {
 
   const afterKB = statSync(outPath).size / 1024;
   const newHeight = getBounds(scene).max[1] - getBounds(scene).min[1];
+  const mode = args.preserveScale ? 'preserved' : 'scaled';
   console.log(
-    `normalized ${basename(outPath)}: ${beforeKB.toFixed(1)}KB → ${afterKB.toFixed(1)}KB, height ${sizeY.toFixed(3)}m → ${newHeight.toFixed(3)}m`,
+    `${mode} ${basename(outPath)}: ${beforeKB.toFixed(1)}KB → ${afterKB.toFixed(1)}KB, height ${sizeY.toFixed(3)}m → ${newHeight.toFixed(3)}m`,
   );
 }
 
