@@ -31,11 +31,11 @@ export function DeskLamp({ position = [0.55, 0.725, -3.2] }: Props) {
         <coneGeometry args={[0.12, 0.16, 20, 1, true]} />
         <meshStandardMaterial color="#e68a6a" roughness={0.6} side={2} />
       </mesh>
+      {/* Bulb — "off" during daytime: subtle, not emissive. */}
       <mesh position={[-0.12, 0.25, 0]}>
         <sphereGeometry args={[0.04, 12, 12]} />
-        <meshStandardMaterial color="#fff0cc" emissive="#ffd488" emissiveIntensity={2.2} toneMapped={false} />
+        <meshStandardMaterial color="#f0e4c8" roughness={0.4} />
       </mesh>
-      <pointLight position={[-0.12, 0.22, 0]} intensity={0.9} distance={2.2} color="#ffc488" decay={2} />
     </group>
   )
 }

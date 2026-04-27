@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { Vector3 } from 'three'
 import { useLoftStore } from '../state/store'
 import { getAnchor, type CameraPose } from '../anchors'
+import { isDebugMode } from '../lib/debug'
 
 // Home: camera on the left wall, looking across/down toward the window.
 // The user is "standing at the left wall" peering into the room diagonally.
@@ -25,10 +26,12 @@ const currentLook = new Vector3()
 export function CameraRig() {
   const { camera } = useThree()
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
-  // Track the current lookAt target separately from the camera (Three has no getter).
   const lookRef = useRef(new Vector3(...HOME_POSE.lookAt))
+  const debug = isDebugMode()
 
   useFrame(() => {
+    if (debug) return // DebugRig owns the camera instead.
+
     const pose = activeAnchor
       ? (getAnchor(activeAnchor)?.cameraFocus ?? HOME_POSE)
       : HOME_POSE

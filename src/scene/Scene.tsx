@@ -2,6 +2,8 @@ import { Canvas } from '@react-three/fiber'
 import { ACESFilmicToneMapping } from 'three'
 import { Link } from 'react-router-dom'
 import { useLoftStore } from '../state/store'
+import { isDebugMode } from '../lib/debug'
+import { DebugRig } from './DebugRig'
 import { Room } from './Room'
 import { Desk } from './Desk'
 import { Rug } from './Rug'
@@ -25,6 +27,7 @@ import { AnchorOverlay } from '../overlays/AnchorOverlay'
 export function Scene() {
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
+  const debug = isDebugMode()
 
   return (
     <div className="fixed inset-0 bg-neutral-900">
@@ -83,6 +86,7 @@ export function Scene() {
         <FairyLights />
         <StairStub />
         <CameraRig />
+        {debug && <DebugRig />}
       </Canvas>
 
       <AnchorOverlay />
@@ -100,9 +104,16 @@ export function Scene() {
           read as plain text →
         </Link>
       </div>
-      {!activeAnchor && (
+      {!activeAnchor && !debug && (
         <div className="fixed bottom-4 left-4 z-20 text-xs font-mono text-neutral-500 pointer-events-none">
           click the notebook on the desk
+        </div>
+      )}
+      {debug && (
+        <div className="fixed bottom-4 left-4 z-20 text-xs font-mono text-amber-400/80 bg-neutral-900/70 border border-amber-500/40 rounded px-3 py-2 backdrop-blur pointer-events-none space-y-0.5">
+          <div className="font-bold tracking-widest">DEBUG</div>
+          <div>left-drag: orbit · right-drag: pan · wheel: zoom</div>
+          <div>wasd: move · q/e: down/up · shift: sprint</div>
         </div>
       )}
     </div>
