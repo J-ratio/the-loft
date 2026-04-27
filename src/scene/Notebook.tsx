@@ -24,7 +24,7 @@ export function Notebook() {
   const reading = readingSlug ? getPost(readingSlug) : undefined
 
   return (
-    <group position={[0, 0.76, -2.9]} rotation={[0, 0.1, 0]}>
+    <group position={[0, 0.85, -3.15]} rotation={[0, 0.1, 0]}>
       {/* Dark book cover underneath */}
       <mesh castShadow position={[0, -0.003, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.34, 0.26]} />

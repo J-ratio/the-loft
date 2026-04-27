@@ -1,57 +1,82 @@
 import { useGLTF } from '@react-three/drei'
+import { useEffect, useRef } from 'react'
+import type { Group } from 'three'
+import { logBbox } from '../lib/bbox-log'
+import { DESK_TOP_Y, DESK_BOARD_DEPTH } from './Desk'
 
-/**
- * GLTF-backed props on the desk top.
- * Desk at (0, 0, -3.15), desk top y ~0.73 (desk_set height 0.78 base to top).
- */
-
-const DESK_TOP_Y = 0.73
+// Board center Z: -3.5 + depth/2. Prop offsets are relative to that.
 const DESK_X = 0
-const DESK_Z = -3.15
+const DESK_Z = -3.5 + DESK_BOARD_DEPTH / 2
 
-export function Stationery() {
-  const { scene } = useGLTF('/models/stationery.glb')
+function AssetOnDesk({
+  url,
+  label,
+  offsetX,
+  offsetZ,
+  rotY,
+  liftY = 0,
+}: {
+  url: string
+  label: string
+  offsetX: number
+  offsetZ: number
+  rotY: number
+  liftY?: number
+}) {
+  const { scene } = useGLTF(url)
+  const ref = useRef<Group>(null!)
+  useEffect(() => {
+    logBbox(label, ref.current)
+  }, [label])
   return (
-    <primitive
-      object={scene}
-      position={[DESK_X - 0.4, DESK_TOP_Y, DESK_Z - 0.15]}
-      rotation={[0, 0.3, 0]}
-    />
+    <group
+      ref={ref}
+      position={[DESK_X + offsetX, DESK_TOP_Y + liftY, DESK_Z + offsetZ]}
+      rotation={[0, rotY, 0]}
+    >
+      <primitive object={scene} />
+    </group>
   )
 }
 
-export function AlarmClock() {
-  const { scene } = useGLTF('/models/alarm_clock.glb')
-  return (
-    <primitive
-      object={scene}
-      position={[DESK_X + 0.35, DESK_TOP_Y, DESK_Z - 0.22]}
-      rotation={[0, 0.2, 0]}
-    />
-  )
-}
-
-export function Mug() {
-  const { scene } = useGLTF('/models/mug.glb')
-  return (
-    <primitive
-      object={scene}
-      position={[DESK_X - 0.55, DESK_TOP_Y, DESK_Z + 0.1]}
-      rotation={[0, -0.3, 0]}
-    />
-  )
-}
-
-export function RubiksCube() {
-  const { scene } = useGLTF('/models/rubiks.glb')
-  return (
-    <primitive
-      object={scene}
-      position={[DESK_X + 0.1, DESK_TOP_Y, DESK_Z + 0.18]}
-      rotation={[0, 0.5, 0]}
-    />
-  )
-}
+export const Stationery = () => (
+  // Poly Haven stationery_supplies: native pivot ~0.07m below base.
+  <AssetOnDesk
+    url="/models/stationery.glb"
+    label="stationery"
+    offsetX={-0.5}
+    offsetZ={-0.18}
+    rotY={0.3}
+    liftY={0.07}
+  />
+)
+export const AlarmClock = () => (
+  <AssetOnDesk
+    url="/models/alarm_clock.glb"
+    label="alarm_clock"
+    offsetX={0.45}
+    offsetZ={-0.18}
+    rotY={0.2}
+  />
+)
+export const Mug = () => (
+  <AssetOnDesk
+    url="/models/mug.glb"
+    label="mug"
+    offsetX={-0.55}
+    offsetZ={0.05}
+    rotY={-0.3}
+  />
+)
+export const RubiksCube = () => (
+  <AssetOnDesk
+    url="/models/rubiks.glb"
+    label="rubiks"
+    offsetX={0.2}
+    offsetZ={0.1}
+    rotY={0.5}
+  />
+)
 
 useGLTF.preload('/models/stationery.glb')
 useGLTF.preload('/models/alarm_clock.glb')

@@ -12,7 +12,6 @@ import { Chair } from './Chair'
 import { DeskLamp } from './DeskLamp'
 import { Stationery, AlarmClock, Mug, RubiksCube } from './DeskTopProps'
 import { Corkboard } from './Corkboard'
-import { DreamCatcher } from './DreamCatcher'
 import { Notebook } from './Notebook'
 import { WindowView } from './WindowView'
 import { CameraRig } from './CameraRig'
@@ -84,7 +83,6 @@ export function Scene() {
         <Mug />
         <RubiksCube />
         <Corkboard />
-        <DreamCatcher />
         <CameraRig />
         {debug && <DebugRig />}
       </Canvas>

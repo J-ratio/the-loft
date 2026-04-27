@@ -1,19 +1,21 @@
 import { useGLTF } from '@react-three/drei'
-import type { Vector3Tuple } from 'three'
+import { useEffect, useRef } from 'react'
+import type { Group, Vector3Tuple } from 'three'
+import { logBbox } from '../lib/bbox-log'
 
 type Props = {
   position?: Vector3Tuple
 }
 
 /**
- * Armchair in front of the desk. Using Poly Haven ArmChair_01 — cozy,
- * mid-century, matches the "lived in" INFP vibe better than an office chair.
- * Rotated to face the desk (-Z).
+ * Armchair in front of desk. Poly Haven ArmChair_01, preserved scale (~1m tall).
  */
-export function Chair({ position = [0, 0, -2.55] }: Props) {
+export function Chair({ position = [0, 0, -2.35] }: Props) {
   const { scene } = useGLTF('/models/armchair.glb')
+  const ref = useRef<Group>(null!)
+  useEffect(() => logBbox('armchair', ref.current), [])
   return (
-    <group position={position} rotation={[0, Math.PI, 0]}>
+    <group ref={ref} position={position} rotation={[0, Math.PI, 0]}>
       <primitive object={scene} />
     </group>
   )

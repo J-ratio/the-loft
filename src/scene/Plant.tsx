@@ -1,19 +1,21 @@
 import { useGLTF } from '@react-three/drei'
-import type { Vector3Tuple } from 'three'
+import { useEffect, useRef } from 'react'
+import type { Group, Vector3Tuple } from 'three'
+import { logBbox } from '../lib/bbox-log'
 
 type Props = {
   position?: Vector3Tuple
 }
 
 /**
- * Potted plant on the right-wall window sill.
- * Uses the Poly Haven "Potted Plant 01" GLB at /models/plant.glb.
- * The import pipeline has already normalized height to 1.1m, base at y=0.
+ * Monstera on the right-wall window sill. Sketchfab asset, scaled to 0.55m.
  */
 export function Plant({ position = [1.5, 0.77, -0.6] }: Props) {
   const { scene } = useGLTF('/models/monstera.glb')
+  const ref = useRef<Group>(null!)
+  useEffect(() => logBbox('monstera', ref.current), [])
   return (
-    <group position={position}>
+    <group ref={ref} position={position}>
       <primitive object={scene} />
     </group>
   )

@@ -11,11 +11,11 @@ import type { Anchor } from './types'
 export const deskAnchor: Anchor = {
   id: 'desk',
   label: 'JOURNAL',
-  position: [0, 0.725, -3.15],
+  position: [0, 0.85, -3.15],
   cameraFocus: {
-    // Looking straight down at the open notebook from reader's POV
-    position: [0, 1.25, -2.55],
-    lookAt: [0, 0.76, -2.95],
+    // Looking down at the open notebook from reader's POV
+    position: [0, 1.35, -2.5],
+    lookAt: [0, 0.87, -3.15],
   },
   overlay: 'blog',
 }
