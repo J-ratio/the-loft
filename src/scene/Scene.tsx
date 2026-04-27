@@ -9,18 +9,18 @@ import { Plant } from './Plant'
 import { Mug } from './Mug'
 import { Chair } from './Chair'
 import { DeskLamp } from './DeskLamp'
-import { Bookshelf } from './Bookshelf'
 import { CreativeClutter } from './CreativeClutter'
 import { FairyLights } from './FairyLights'
-import { WallArt } from './WallArt'
+import { Corkboard } from './Corkboard'
 import { WindowView } from './WindowView'
+import { StairStub } from './StairStub'
 import { CameraRig } from './CameraRig'
 import { AnchorOverlay } from '../overlays/AnchorOverlay'
 
 /**
- * Top-level scene surface. Canvas + HTML overlay + minimal HUD.
- * The HUD lives outside the Canvas (design law #3: diegetic UI inside,
- * plain HTML for fast-travel outside).
+ * Scene root. Long narrow upper-loft (X=3.5 × Z=5), window on right wall,
+ * sun streams in from +X, camera sits on the LEFT and looks across toward
+ * the window / down the room length.
  */
 export function Scene() {
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
@@ -30,25 +30,20 @@ export function Scene() {
     <div className="fixed inset-0 bg-neutral-900">
       <Canvas
         shadows
-        camera={{ position: [1.9, 1.45, 2.0], fov: 38 }}
+        camera={{ position: [-1.3, 1.5, 0.2], fov: 48 }}
         gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.9 }}
         onPointerMissed={() => {
-          // Click outside any interactive mesh → return home.
           if (activeAnchor) setActiveAnchor(null)
         }}
       >
-        {/* Hemisphere: warm amber sky ↔ cool indigo "shadow" bounce.
-            This is what kills the monochrome-orange feel. */}
-        <hemisphereLight args={['#ffcf8a', '#2a3550', 0.55]} />
-
-        {/* Very subtle ambient fill */}
+        <hemisphereLight args={['#ffcf8a', '#2a3550', 0.5]} />
         <ambientLight intensity={0.15} color="#ffe4c4" />
 
-        {/* The sun: streaming IN THROUGH the window (back wall, right side).
-            Position places it "outside" — rays travel into the room. */}
+        {/* Sun: streaming in through the RIGHT wall window.
+            Positioned outside-right-and-slightly-above. */}
         <directionalLight
-          position={[2.0, 2.5, -4]}
-          intensity={3.0}
+          position={[5, 3.5, -0.5]}
+          intensity={3.2}
           color="#ffb978"
           castShadow
           shadow-mapSize={[2048, 2048]}
@@ -59,20 +54,18 @@ export function Scene() {
           shadow-bias={-0.0005}
         />
 
-        {/* Warm "bounced sun" fill at window height — softens shadows
-            on the window-facing side of props. */}
+        {/* Warm bounce near the window side */}
         <pointLight
-          position={[1.5, 1.6, -1.8]}
-          intensity={0.6}
+          position={[1.4, 1.5, -1.0]}
+          intensity={0.7}
           color="#ffc88a"
           distance={5}
         />
 
-        {/* Cool fill from the opposite (left) wall — simulates reflected
-            skylight, breaks the all-warm palette. */}
+        {/* Cool fill from the left (opposite wall) — breaks monochrome */}
         <pointLight
-          position={[-2.0, 1.8, 0.5]}
-          intensity={0.4}
+          position={[-1.6, 1.8, -1.0]}
+          intensity={0.35}
           color="#8aa8d6"
           distance={6}
         />
@@ -80,21 +73,20 @@ export function Scene() {
         <WindowView />
         <Room />
         <Rug />
-        <Bookshelf />
         <Desk />
         <Chair />
         <DeskLamp />
         <Plant />
         <Mug />
         <CreativeClutter />
-        <WallArt />
+        <Corkboard />
         <FairyLights />
+        <StairStub />
         <CameraRig />
       </Canvas>
 
       <AnchorOverlay />
 
-      {/* HUD — plain HTML over the canvas */}
       <div className="fixed top-4 left-4 z-20 text-neutral-100 pointer-events-none">
         <div className="text-xs font-mono tracking-widest text-neutral-400">
           THE LOFT

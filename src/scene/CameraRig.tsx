@@ -4,9 +4,11 @@ import { Vector3 } from 'three'
 import { useLoftStore } from '../state/store'
 import { getAnchor, type CameraPose } from '../anchors'
 
+// Home: camera on the left wall, looking across/down toward the window.
+// The user is "standing at the left wall" peering into the room diagonally.
 const HOME_POSE: CameraPose = {
-  position: [2.2, 1.8, 2.4],
-  lookAt: [0, 0.9, -0.8],
+  position: [-1.3, 1.5, 0.2],
+  lookAt: [0.8, 1.3, -1.8],
 }
 
 // Lerp factor per frame. Higher = snappier, lower = smoother.

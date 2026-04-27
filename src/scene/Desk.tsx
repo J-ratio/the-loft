@@ -3,8 +3,8 @@ import { useLoftStore } from '../state/store'
 import { deskAnchor } from '../anchors'
 
 /**
- * Greybox desk + notebook. The notebook is the clickable anchor surface;
- * clicking it activates the desk anchor (camera dolly + overlay).
+ * Desk against the back wall. The notebook is the clickable anchor surface.
+ * Desk faces +Z (toward camera). Chair will sit on +Z side of it.
  */
 export function Desk() {
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
@@ -33,10 +33,10 @@ export function Desk() {
         </mesh>
       ))}
 
-      {/* Notebook — the clickable anchor */}
+      {/* Notebook — the clickable anchor (on desk, slightly forward toward camera) */}
       <mesh
         castShadow
-        position={[0, 0.76, 0.1]}
+        position={[0, 0.76, 0.18]}
         rotation={[0, 0.08, 0]}
         onPointerOver={(e) => {
           e.stopPropagation()

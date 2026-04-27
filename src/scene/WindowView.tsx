@@ -1,54 +1,64 @@
 /**
- * A painted backdrop seen through the window. Sits just behind the window
- * plane — the warm emissive window acts as the "glass + light bloom."
- *
- * Composition: warm sky gradient top → distant city silhouette at horizon →
- * a foreground roof / hill tint at bottom. All primitives, no textures.
+ * Cityscape backdrop seen through the right-wall window.
+ * Window opening: x = +1.75, z ∈ [-2.0, 0.0], y ∈ [0.7, 2.3].
+ * Backdrop sits at x = +2.15, facing -X (toward the room interior).
  */
 export function WindowView() {
+  const x = 2.15
+  const length = 2.2 // along Z (slightly wider than window to avoid edge leaks)
+  const height = 1.8
+  const zCenter = -1.0
+  const yCenter = 1.5
+
   return (
-    <group position={[1.3, 1.65, -2.8]}>
-      {/* Sky — warm amber gradient fake via one emissive plane */}
+    <group position={[x, yCenter, zCenter]} rotation={[0, -Math.PI / 2, 0]}>
+      {/* Sky */}
       <mesh>
-        <planeGeometry args={[3.2, 2.4]} />
+        <planeGeometry args={[length, height]} />
         <meshBasicMaterial color="#fbc988" toneMapped={false} />
       </mesh>
 
-      {/* Horizon band — softer/pinker */}
-      <mesh position={[0, -0.35, 0.01]}>
-        <planeGeometry args={[3.2, 0.7]} />
+      {/* Horizon band */}
+      <mesh position={[0, -0.42, 0.01]}>
+        <planeGeometry args={[length, 0.55]} />
         <meshBasicMaterial color="#f3a77a" toneMapped={false} />
       </mesh>
 
-      {/* Distant rooftops — dark silhouettes at the horizon.
-          Varied heights create a city skyline read. */}
+      {/* Rooftops silhouettes */}
       {[
-        { x: -1.2, w: 0.35, h: 0.18 },
-        { x: -0.85, w: 0.3, h: 0.28 },
-        { x: -0.5, w: 0.45, h: 0.22 },
-        { x: 0, w: 0.5, h: 0.32 },
-        { x: 0.45, w: 0.35, h: 0.2 },
-        { x: 0.78, w: 0.4, h: 0.25 },
-        { x: 1.15, w: 0.3, h: 0.18 },
+        { off: -0.95, w: 0.3, h: 0.22 },
+        { off: -0.65, w: 0.28, h: 0.3 },
+        { off: -0.35, w: 0.35, h: 0.22 },
+        { off: -0.05, w: 0.45, h: 0.32 },
+        { off: 0.32, w: 0.35, h: 0.24 },
+        { off: 0.65, w: 0.3, h: 0.28 },
+        { off: 0.92, w: 0.28, h: 0.2 },
       ].map((b, i) => (
-        <mesh key={i} position={[b.x, -0.55 + b.h / 2, 0.02]}>
+        <mesh key={i} position={[b.off, -0.68 + b.h / 2, 0.02]}>
           <planeGeometry args={[b.w, b.h]} />
           <meshBasicMaterial color="#6b3a2a" toneMapped={false} />
         </mesh>
       ))}
 
-      {/* A couple of tiny warm lit windows on the rooftops */}
+      {/* Lit rooftop windows */}
       {[
-        { x: -0.78, y: -0.48 },
-        { x: 0.05, y: -0.42 },
-        { x: 0.5, y: -0.5 },
-        { x: 0.92, y: -0.46 },
+        { off: -0.6, y: -0.58 },
+        { off: -0.1, y: -0.55 },
+        { off: 0.15, y: -0.6 },
+        { off: 0.55, y: -0.55 },
+        { off: 0.85, y: -0.58 },
       ].map((w, i) => (
-        <mesh key={`w-${i}`} position={[w.x, w.y, 0.03]}>
-          <planeGeometry args={[0.03, 0.04]} />
+        <mesh key={`lw-${i}`} position={[w.off, w.y, 0.03]}>
+          <planeGeometry args={[0.025, 0.035]} />
           <meshBasicMaterial color="#ffdc8a" toneMapped={false} />
         </mesh>
       ))}
+
+      {/* Warm sun disc, upper-right area */}
+      <mesh position={[0.55, 0.35, 0.01]}>
+        <circleGeometry args={[0.22, 32]} />
+        <meshBasicMaterial color="#ffd895" toneMapped={false} />
+      </mesh>
     </group>
   )
 }

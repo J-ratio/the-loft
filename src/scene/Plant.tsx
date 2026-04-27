@@ -5,30 +5,28 @@ type Props = {
 }
 
 /**
- * Stylized Monstera — terracotta pot + a few vertical leaf planes.
- * Primitive, but reads as "houseplant" from the default camera angle.
- * Lives on the floor near the window for INFP "growth toward light".
+ * Stylized Monstera on the RIGHT-wall window sill.
+ * Sill y = 0.77, x = +1.65 (just inside the window frame).
+ * Leaves spread toward -X (into the room) to catch the sun.
  */
-export function Plant({ position = [1.8, 0, -1.8] }: Props) {
+export function Plant({ position = [1.5, 0.77, -0.6] }: Props) {
   return (
     <group position={position}>
-      {/* Terracotta pot */}
+      {/* Pot */}
       <mesh castShadow position={[0, 0.18, 0]}>
-        <cylinderGeometry args={[0.2, 0.16, 0.36, 16]} />
+        <cylinderGeometry args={[0.18, 0.14, 0.34, 16]} />
         <meshStandardMaterial color="#a65b3d" roughness={0.85} />
       </mesh>
-
-      {/* Soil */}
-      <mesh position={[0, 0.37, 0]}>
-        <cylinderGeometry args={[0.19, 0.19, 0.02, 16]} />
+      <mesh position={[0, 0.36, 0]}>
+        <cylinderGeometry args={[0.17, 0.17, 0.02, 16]} />
         <meshStandardMaterial color="#2d1d12" roughness={1} />
       </mesh>
 
-      {/* Thin stems */}
+      {/* Stems */}
       {[
-        { rot: 0.15, lean: [0.05, 0, 0.02] as Vector3Tuple },
-        { rot: -0.25, lean: [-0.06, 0, 0.04] as Vector3Tuple },
-        { rot: 0.05, lean: [0.02, 0, -0.05] as Vector3Tuple },
+        { rot: 0.2, lean: [-0.05, 0, 0.02] as Vector3Tuple },
+        { rot: -0.15, lean: [0.04, 0, 0.03] as Vector3Tuple },
+        { rot: 0.08, lean: [-0.02, 0, -0.04] as Vector3Tuple },
       ].map((s, i) => (
         <mesh
           key={`stem-${i}`}
@@ -41,13 +39,14 @@ export function Plant({ position = [1.8, 0, -1.8] }: Props) {
         </mesh>
       ))}
 
-      {/* Leaves — big rounded planes at varied angles */}
+      {/* Leaves — stretched outward to read as Monstera reaching for the window */}
       {[
-        { pos: [0.12, 0.75, 0.08] as Vector3Tuple, rot: [0.2, 0.4, 0.3] as Vector3Tuple, scale: 1 },
-        { pos: [-0.14, 0.8, 0.1] as Vector3Tuple, rot: [0.1, -0.6, -0.2] as Vector3Tuple, scale: 1.1 },
-        { pos: [0.06, 0.9, -0.1] as Vector3Tuple, rot: [-0.1, 0.2, 0.05] as Vector3Tuple, scale: 1.2 },
-        { pos: [-0.08, 0.65, -0.05] as Vector3Tuple, rot: [0.3, -0.3, 0.4] as Vector3Tuple, scale: 0.85 },
-        { pos: [0.16, 0.55, -0.02] as Vector3Tuple, rot: [0.4, 0.8, -0.3] as Vector3Tuple, scale: 0.9 },
+        { pos: [-0.3, 0.75, 0.15] as Vector3Tuple, rot: [0.1, -0.4, 0.6] as Vector3Tuple, scale: 1.2 },
+        { pos: [0.25, 0.82, 0.12] as Vector3Tuple, rot: [0.05, 0.6, -0.5] as Vector3Tuple, scale: 1.1 },
+        { pos: [-0.2, 0.98, -0.15] as Vector3Tuple, rot: [-0.1, -0.3, 0.3] as Vector3Tuple, scale: 1.25 },
+        { pos: [0.22, 0.62, -0.08] as Vector3Tuple, rot: [0.3, 0.4, 0.5] as Vector3Tuple, scale: 0.95 },
+        { pos: [-0.35, 0.55, -0.05] as Vector3Tuple, rot: [0.4, -0.9, -0.4] as Vector3Tuple, scale: 0.9 },
+        { pos: [0.05, 1.02, 0.05] as Vector3Tuple, rot: [-0.15, 0, 0.1] as Vector3Tuple, scale: 1.05 },
       ].map((l, i) => (
         <mesh
           key={`leaf-${i}`}
@@ -56,12 +55,8 @@ export function Plant({ position = [1.8, 0, -1.8] }: Props) {
           rotation={l.rot}
           scale={l.scale}
         >
-          <circleGeometry args={[0.22, 8]} />
-          <meshStandardMaterial
-            color="#3f7a3a"
-            roughness={0.7}
-            side={2 /* DoubleSide */}
-          />
+          <circleGeometry args={[0.23, 10]} />
+          <meshStandardMaterial color="#3f7a3a" roughness={0.7} side={2} />
         </mesh>
       ))}
     </group>
