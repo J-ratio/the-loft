@@ -9,7 +9,7 @@ import { Desk } from './Desk'
 import { Rug } from './Rug'
 import { Plant } from './Plant'
 import { Chair } from './Chair'
-import { Stationery, AlarmClock, Mug, RubiksCube } from './DeskTopProps'
+import { AlarmClock, Mug, RubiksCube } from './DeskTopProps'
 import { Corkboard } from './Corkboard'
 import { Notebook } from './Notebook'
 import { WindowView } from './WindowView'
@@ -76,7 +76,6 @@ export function Scene() {
         <Notebook />
         <Chair />
         <Plant />
-        <Stationery />
         <AlarmClock />
         <Mug />
         <RubiksCube />

@@ -14,9 +14,9 @@ function AssetOnDesk({
   offsetX,
   offsetZ,
   rotY,
+  rotX = 0,
+  rotZ = 0,
   liftY = 0,
-  /** Per-asset Y offset to nudge visible base onto surface (some GLTF bboxes
-   *  include invisible geometry below visible meshes, making items look floaty). */
   sinkY = 0,
 }: {
   url: string
@@ -24,6 +24,8 @@ function AssetOnDesk({
   offsetX: number
   offsetZ: number
   rotY: number
+  rotX?: number
+  rotZ?: number
   liftY?: number
   sinkY?: number
 }) {
@@ -36,22 +38,13 @@ function AssetOnDesk({
     <group
       ref={ref}
       position={[DESK_X + offsetX, DESK_TOP_Y + liftY - sinkY, DESK_Z + offsetZ]}
-      rotation={[0, rotY, 0]}
+      rotation={[rotX, rotY, rotZ]}
     >
       <primitive object={scene} />
     </group>
   )
 }
 
-export const Stationery = () => (
-  <AssetOnDesk
-    url="/models/stationery.glb"
-    label="stationery"
-    offsetX={-0.55}
-    offsetZ={-0.22}
-    rotY={-0.4}
-  />
-)
 export const AlarmClock = () => (
   // Flip 180° so the clock face points toward the chair (+Z), not the wall.
   <AssetOnDesk
@@ -81,7 +74,6 @@ export const RubiksCube = () => (
   />
 )
 
-useGLTF.preload('/models/stationery.glb')
 useGLTF.preload('/models/alarm_clock.glb')
 useGLTF.preload('/models/mug.glb')
 useGLTF.preload('/models/rubiks.glb')
