@@ -4,30 +4,27 @@ import type { Group } from 'three'
 import { logBbox } from '../lib/bbox-log'
 import { DESK_TOP_Y, DESK_BOARD_DEPTH } from './Desk'
 
-// Board center Z: -3.5 + depth/2. Prop offsets are relative to that.
+/**
+ * Desk-top prop defaults. Each prop renders at its local origin with a
+ * baked-in rotation; Scene.tsx places it in world space via <Editable>.
+ * Caller can override with DEFAULT_* positions exported here.
+ */
+
 const DESK_X = 0
 const DESK_Z = -3.5 + DESK_BOARD_DEPTH / 2
 
-function AssetOnDesk({
+export const ALARM_CLOCK_POS: [number, number, number] = [DESK_X + 0.6, DESK_TOP_Y, DESK_Z - 0.22]
+export const MUG_POS: [number, number, number] = [DESK_X - 0.65, DESK_TOP_Y, DESK_Z + 0.05]
+export const RUBIKS_POS: [number, number, number] = [DESK_X + 0.35, DESK_TOP_Y, DESK_Z + 0.12]
+
+function AssetAtOrigin({
   url,
   label,
-  offsetX,
-  offsetZ,
-  rotY,
-  rotX = 0,
-  rotZ = 0,
-  liftY = 0,
-  sinkY = 0,
+  rotation = [0, 0, 0],
 }: {
   url: string
   label: string
-  offsetX: number
-  offsetZ: number
-  rotY: number
-  rotX?: number
-  rotZ?: number
-  liftY?: number
-  sinkY?: number
+  rotation?: [number, number, number]
 }) {
   const { scene } = useGLTF(url)
   const ref = useRef<Group>(null!)
@@ -35,43 +32,20 @@ function AssetOnDesk({
     logBbox(label, ref.current)
   }, [label])
   return (
-    <group
-      ref={ref}
-      position={[DESK_X + offsetX, DESK_TOP_Y + liftY - sinkY, DESK_Z + offsetZ]}
-      rotation={[rotX, rotY, rotZ]}
-    >
+    <group ref={ref} rotation={rotation}>
       <primitive object={scene} />
     </group>
   )
 }
 
 export const AlarmClock = () => (
-  // Flip 180° so the clock face points toward the chair (+Z), not the wall.
-  <AssetOnDesk
-    url="/models/alarm_clock.glb"
-    label="alarm_clock"
-    offsetX={0.6}
-    offsetZ={-0.22}
-    rotY={Math.PI + 0.2}
-  />
+  <AssetAtOrigin url="/models/alarm_clock.glb" label="alarm_clock" rotation={[0, Math.PI + 0.2, 0]} />
 )
 export const Mug = () => (
-  <AssetOnDesk
-    url="/models/mug.glb"
-    label="mug"
-    offsetX={-0.65}
-    offsetZ={0.05}
-    rotY={0}
-  />
+  <AssetAtOrigin url="/models/mug.glb" label="mug" />
 )
 export const RubiksCube = () => (
-  <AssetOnDesk
-    url="/models/rubiks.glb"
-    label="rubiks"
-    offsetX={0.35}
-    offsetZ={0.12}
-    rotY={0.5}
-  />
+  <AssetAtOrigin url="/models/rubiks.glb" label="rubiks" rotation={[0, 0.5, 0]} />
 )
 
 useGLTF.preload('/models/alarm_clock.glb')

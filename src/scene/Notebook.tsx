@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useLoftStore } from '../state/store'
 import { listPosts, getPost } from '../blog/content'
 
+export const NOTEBOOK_POS: [number, number, number] = [0, 0.852, -3.15]
+
 /**
  * Open notebook on the desk — the Blog anchor.
  *
@@ -24,7 +26,7 @@ export function Notebook() {
   const reading = readingSlug ? getPost(readingSlug) : undefined
 
   return (
-    <group position={[0, 0.852, -3.15]} rotation={[0, 0.1, 0]}>
+    <group rotation={[0, 0.1, 0]}>
       {/* Dark book cover, sitting just above desk surface */}
       <mesh castShadow position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.34, 0.26]} />

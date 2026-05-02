@@ -1,21 +1,19 @@
 import { useGLTF } from '@react-three/drei'
 import { useEffect, useRef } from 'react'
-import type { Group, Vector3Tuple } from 'three'
+import type { Group } from 'three'
 import { logBbox } from '../lib/bbox-log'
 
-type Props = {
-  position?: Vector3Tuple
-}
+export const PLANT_POS: [number, number, number] = [1.5, 0.77, -0.6]
 
 /**
- * Monstera on the right-wall window sill. Sketchfab asset, scaled to 0.55m.
+ * Monstera — Sketchfab asset. Renders at local origin; caller positions.
  */
-export function Plant({ position = [1.5, 0.77, -0.6] }: Props) {
+export function Plant() {
   const { scene } = useGLTF('/models/monstera.glb')
   const ref = useRef<Group>(null!)
   useEffect(() => logBbox('monstera', ref.current), [])
   return (
-    <group ref={ref} position={position}>
+    <group ref={ref}>
       <primitive object={scene} />
     </group>
   )

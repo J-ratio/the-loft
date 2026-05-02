@@ -8,16 +8,23 @@
  * Production users never see this because they don't set the flag.
  */
 
-let cached: boolean | null = null
+function readFlag(name: string): boolean {
+  if (typeof window === 'undefined') return false
+  const raw = new URLSearchParams(window.location.search).get(name)
+  return raw !== null && raw !== '' && raw !== '0' && raw !== 'false'
+}
+
+let debugCached: boolean | null = null
+let editCached: boolean | null = null
 
 export function isDebugMode(): boolean {
-  if (cached !== null) return cached
-  if (typeof window === 'undefined') {
-    cached = false
-    return false
-  }
-  const params = new URLSearchParams(window.location.search)
-  const raw = params.get('debug')
-  cached = raw !== null && raw !== '' && raw !== '0' && raw !== 'false'
-  return cached
+  if (debugCached !== null) return debugCached
+  debugCached = readFlag('debug')
+  return debugCached
+}
+
+export function isEditMode(): boolean {
+  if (editCached !== null) return editCached
+  editCached = readFlag('edit')
+  return editCached
 }

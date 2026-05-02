@@ -2,16 +2,19 @@ import { Canvas } from '@react-three/fiber'
 import { ACESFilmicToneMapping } from 'three'
 import { Link } from 'react-router-dom'
 import { useLoftStore } from '../state/store'
-import { isDebugMode } from '../lib/debug'
+import { isDebugMode, isEditMode } from '../lib/debug'
 import { DebugRig } from './DebugRig'
+import { SceneEditor } from './SceneEditor'
+import { EditorHud } from './EditorHud'
+import { Editable } from './Editable'
 import { Room } from './Room'
 import { Desk } from './Desk'
 import { Rug } from './Rug'
-import { Plant } from './Plant'
-import { Chair } from './Chair'
-import { AlarmClock, Mug, RubiksCube } from './DeskTopProps'
+import { Plant, PLANT_POS } from './Plant'
+import { Chair, CHAIR_POS } from './Chair'
+import { AlarmClock, Mug, RubiksCube, ALARM_CLOCK_POS, MUG_POS, RUBIKS_POS } from './DeskTopProps'
 import { Corkboard } from './Corkboard'
-import { Notebook } from './Notebook'
+import { Notebook, NOTEBOOK_POS } from './Notebook'
 import { WindowView } from './WindowView'
 import { CameraRig } from './CameraRig'
 
@@ -24,6 +27,7 @@ export function Scene() {
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
   const debug = isDebugMode()
+  const edit = isEditMode()
 
   return (
     <div className="fixed inset-0 bg-neutral-900">
@@ -38,8 +42,6 @@ export function Scene() {
         <hemisphereLight args={['#ffcf8a', '#2a3550', 0.5]} />
         <ambientLight intensity={0.15} color="#ffe4c4" />
 
-        {/* Sun: streaming in through the RIGHT wall window.
-            Positioned outside-right-and-slightly-above. */}
         <directionalLight
           position={[5, 3.5, -0.5]}
           intensity={3.2}
@@ -52,16 +54,12 @@ export function Scene() {
           shadow-camera-bottom={-4}
           shadow-bias={-0.0005}
         />
-
-        {/* Warm bounce near the window side */}
         <pointLight
           position={[1.4, 1.5, -1.0]}
           intensity={0.7}
           color="#ffc88a"
           distance={5}
         />
-
-        {/* Cool fill from the left (opposite wall) — breaks monochrome */}
         <pointLight
           position={[-1.6, 1.8, -1.0]}
           intensity={0.35}
@@ -73,16 +71,21 @@ export function Scene() {
         <Room />
         <Rug />
         <Desk />
-        <Notebook />
-        <Chair />
-        <Plant />
-        <AlarmClock />
-        <Mug />
-        <RubiksCube />
         <Corkboard />
+
+        <Editable name="notebook" position={NOTEBOOK_POS}><Notebook /></Editable>
+        <Editable name="chair" position={CHAIR_POS}><Chair /></Editable>
+        <Editable name="plant" position={PLANT_POS}><Plant /></Editable>
+        <Editable name="alarm_clock" position={ALARM_CLOCK_POS}><AlarmClock /></Editable>
+        <Editable name="mug" position={MUG_POS}><Mug /></Editable>
+        <Editable name="rubiks" position={RUBIKS_POS}><RubiksCube /></Editable>
+
         <CameraRig />
         {debug && <DebugRig />}
+        {edit && <SceneEditor />}
       </Canvas>
+
+      {edit && <EditorHud />}
 
       <div className="fixed top-4 left-4 z-20 text-neutral-100 pointer-events-none">
         <div className="text-xs font-mono tracking-widest text-neutral-400">
@@ -97,7 +100,7 @@ export function Scene() {
           read as plain text →
         </Link>
       </div>
-      {!activeAnchor && !debug && (
+      {!activeAnchor && !debug && !edit && (
         <div className="fixed bottom-4 left-4 z-20 text-xs font-mono text-neutral-500 pointer-events-none">
           click the notebook on the desk
         </div>
