@@ -1,5 +1,9 @@
-import { Canvas } from '@react-three/fiber'
-import { ACESFilmicToneMapping } from 'three'
+import { Canvas, useThree } from '@react-three/fiber'
+import { EffectComposer, Bloom, GodRays } from '@react-three/postprocessing'
+import { BlendFunction, KernelSize } from 'postprocessing'
+import { ACESFilmicToneMapping, PCFSoftShadowMap } from 'three'
+import { useEffect, useRef, useState } from 'react'
+import type { Mesh } from 'three'
 import { Link } from 'react-router-dom'
 import { useLoftStore } from '../state/store'
 import { isDebugMode, isEditMode } from '../lib/debug'
@@ -28,40 +32,80 @@ import { WindowView } from './WindowView'
 import { CameraRig } from './CameraRig'
 
 /**
+ * Sun: a real emissive sphere sitting outside the window. The GodRays
+ * post-effect samples this mesh to compute light shafts streaming through
+ * the window mullions. Positioned where the painted sun disc lives in
+ * WindowView so both align visually.
+ */
+function SunMesh({ meshRef }: { meshRef: React.MutableRefObject<Mesh | null> }) {
+  return (
+    <mesh ref={(m) => (meshRef.current = m)} position={[3.5, 1.9, -1.0]}>
+      <sphereGeometry args={[0.35, 32, 32]} />
+      <meshBasicMaterial color="#fff3c8" toneMapped={false} />
+    </mesh>
+  )
+}
+
+/** Switch the shadow map type to PCFSoft for softer/longer shadows. */
+function SoftShadows() {
+  const { gl } = useThree()
+  useEffect(() => {
+    gl.shadowMap.type = PCFSoftShadowMap
+    gl.shadowMap.needsUpdate = true
+  }, [gl])
+  return null
+}
+
+/**
  * Scene root. Long narrow upper-loft (X=3.5 × Z=5), window on right wall,
- * sun streams in from +X, camera sits on the LEFT and looks across toward
- * the window / down the room length.
+ * sun streams in from +X, camera on LEFT.
+ *
+ * Lighting = INFP golden-hour day:
+ *  - warm low-angle directional sun (long soft shadows via PCFSoft)
+ *  - warm hemisphere + cool bounce for warm/cool tension
+ *  - real sun sphere + GodRays post-effect for volumetric light shafts
+ *  - Bloom on bright pixels for window halo + glow
  */
 export function Scene() {
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
   const debug = isDebugMode()
   const edit = isEditMode()
+  const sunRef = useRef<Mesh | null>(null)
+  const [sunReady, setSunReady] = useState(false)
 
   return (
     <div className="fixed inset-0 bg-neutral-900">
       <Canvas
         shadows
         camera={{ position: [-1.3, 1.5, 0.2], fov: 48 }}
-        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.9 }}
+        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
         onPointerMissed={() => {
           if (activeAnchor) setActiveAnchor(null)
         }}
+        onCreated={() => {
+          // Signal that the scene is ready so the post-effects can be mounted
+          // with a valid sun mesh ref.
+          requestAnimationFrame(() => setSunReady(true))
+        }}
       >
-        <hemisphereLight args={['#ffcf8a', '#2a3550', 0.5]} />
-        <ambientLight intensity={0.15} color="#ffe4c4" />
+        <SoftShadows />
+        <hemisphereLight args={['#ffcf8a', '#2a3550', 0.45]} />
+        <ambientLight intensity={0.12} color="#ffe4c4" />
 
+        {/* Sun — low angle for long soft shadows */}
         <directionalLight
-          position={[5, 3.5, -0.5]}
-          intensity={3.2}
+          position={[6, 2.0, -1.0]}
+          intensity={3.0}
           color="#ffb978"
           castShadow
-          shadow-mapSize={[2048, 2048]}
+          shadow-mapSize={[4096, 4096]}
           shadow-camera-left={-4}
           shadow-camera-right={4}
           shadow-camera-top={4}
           shadow-camera-bottom={-4}
-          shadow-bias={-0.0005}
+          shadow-bias={-0.0003}
+          shadow-radius={6}
         />
         <pointLight
           position={[1.4, 1.5, -1.0]}
@@ -75,6 +119,8 @@ export function Scene() {
           color="#8aa8d6"
           distance={6}
         />
+
+        <SunMesh meshRef={sunRef} />
 
         <WindowView />
         <Room />
@@ -92,6 +138,28 @@ export function Scene() {
         <CameraRig />
         {debug && <DebugRig />}
         {edit && <SceneEditor />}
+
+        {sunReady && sunRef.current && (
+          <EffectComposer multisampling={0} stencilBuffer={false}>
+            <Bloom
+              intensity={0.6}
+              luminanceThreshold={0.8}
+              luminanceSmoothing={0.3}
+              kernelSize={KernelSize.LARGE}
+              mipmapBlur
+            />
+            <GodRays
+              sun={sunRef.current}
+              density={0.96}
+              decay={0.92}
+              weight={0.55}
+              exposure={0.55}
+              samples={60}
+              blur
+              blendFunction={BlendFunction.SCREEN}
+            />
+          </EffectComposer>
+        )}
       </Canvas>
 
       {edit && <EditorHud />}
