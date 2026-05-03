@@ -14,7 +14,7 @@ const DESK_X = 0
 const DESK_Z = -3.5 + DESK_BOARD_DEPTH / 2
 
 export const ALARM_CLOCK_POS: [number, number, number] = [0.6, 0.85, -3.37]
-export const ALARM_CLOCK_ROT: [number, number, number] = [-3.142, 0.197, -3.142]
+export const ALARM_CLOCK_ROT: [number, number, number] = [-3.142, 3.339, -3.142]
 export const MUG_POS: [number, number, number] = [-0.65, 0.85, -3.1]
 export const MUG_ROT: [number, number, number] = [0, 0, -0.291]
 export const RUBIKS_POS: [number, number, number] = [DESK_X + 0.35, DESK_TOP_Y, DESK_Z + 0.12]
