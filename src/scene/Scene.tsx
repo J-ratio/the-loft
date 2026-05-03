@@ -1,8 +1,6 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { EffectComposer, Bloom, GodRays } from '@react-three/postprocessing'
-import { BlendFunction, KernelSize } from 'postprocessing'
 import { ACESFilmicToneMapping, PCFSoftShadowMap } from 'three'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import type { Mesh } from 'three'
 import { Link } from 'react-router-dom'
 import { useLoftStore } from '../state/store'
@@ -83,7 +81,6 @@ export function Scene() {
   const debug = isDebugMode()
   const edit = isEditMode()
   const sunRef = useRef<Mesh | null>(null)
-  const [sunReady, setSunReady] = useState(false)
 
   return (
     <div className="fixed inset-0 bg-neutral-900">
@@ -93,11 +90,6 @@ export function Scene() {
         gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
         onPointerMissed={() => {
           if (activeAnchor) setActiveAnchor(null)
-        }}
-        onCreated={() => {
-          // Signal that the scene is ready so the post-effects can be mounted
-          // with a valid sun mesh ref.
-          requestAnimationFrame(() => setSunReady(true))
         }}
       >
         <SoftShadows />
@@ -150,28 +142,8 @@ export function Scene() {
         {debug && <DebugRig />}
         {edit && <SceneEditor />}
 
-        {sunReady && sunRef.current && (
-          <EffectComposer multisampling={0} stencilBuffer={false}>
-            <Bloom
-              intensity={0.6}
-              luminanceThreshold={0.8}
-              luminanceSmoothing={0.3}
-              kernelSize={KernelSize.LARGE}
-              mipmapBlur
-            />
-            <GodRays
-              sun={sunRef.current}
-              density={0.96}
-              decay={0.94}
-              weight={0.8}
-              exposure={0.8}
-              samples={80}
-              clampMax={1.0}
-              blur
-              blendFunction={BlendFunction.SCREEN}
-            />
-          </EffectComposer>
-        )}
+        {/* Postprocessing disabled — EffectComposer + Bloom was locking up
+            the MCP browser. Re-enable after investigating perf. */}
       </Canvas>
 
       {edit && <EditorHud />}
