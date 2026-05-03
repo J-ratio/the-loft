@@ -50,7 +50,7 @@ import { CameraRig } from './CameraRig'
  */
 function SunMesh({ meshRef }: { meshRef: React.MutableRefObject<Mesh | null> }) {
   return (
-    <mesh ref={(m) => (meshRef.current = m)} position={[20, 5, -1.0]}>
+    <mesh ref={(m) => (meshRef.current = m)} position={[20, 5, 1.0]}>
       <sphereGeometry args={[0.6, 24, 24]} />
       <meshBasicMaterial color="#fff3c8" toneMapped={false} />
     </mesh>
@@ -106,7 +106,7 @@ export function Scene() {
 
         {/* Sun — low angle for long soft shadows */}
         <directionalLight
-          position={[20, 5, -1.0]}
+          position={[20, 5, 1.0]}
           intensity={3.0}
           color="#ffb978"
           castShadow
