@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import type { Group } from 'three'
 import { logBbox } from '../lib/bbox-log'
 
-export const PLANT_POS: [number, number, number] = [1.5, 0.77, -0.6]
+export const PLANT_POS: [number, number, number] = [1.641, 0.725, -0.284]
 
 /**
  * Monstera — Sketchfab asset. Renders at local origin; caller positions.

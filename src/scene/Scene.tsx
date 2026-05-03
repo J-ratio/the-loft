@@ -12,7 +12,16 @@ import { Desk } from './Desk'
 import { Rug } from './Rug'
 import { Plant, PLANT_POS } from './Plant'
 import { Chair, CHAIR_POS } from './Chair'
-import { AlarmClock, Mug, RubiksCube, ALARM_CLOCK_POS, MUG_POS, RUBIKS_POS } from './DeskTopProps'
+import {
+  AlarmClock,
+  Mug,
+  RubiksCube,
+  ALARM_CLOCK_POS,
+  ALARM_CLOCK_ROT,
+  MUG_POS,
+  MUG_ROT,
+  RUBIKS_POS,
+} from './DeskTopProps'
 import { Corkboard } from './Corkboard'
 import { Notebook, NOTEBOOK_POS } from './Notebook'
 import { WindowView } from './WindowView'
@@ -76,8 +85,8 @@ export function Scene() {
         <Editable name="notebook" position={NOTEBOOK_POS}><Notebook /></Editable>
         <Editable name="chair" position={CHAIR_POS}><Chair /></Editable>
         <Editable name="plant" position={PLANT_POS}><Plant /></Editable>
-        <Editable name="alarm_clock" position={ALARM_CLOCK_POS}><AlarmClock /></Editable>
-        <Editable name="mug" position={MUG_POS}><Mug /></Editable>
+        <Editable name="alarm_clock" position={ALARM_CLOCK_POS} rotation={ALARM_CLOCK_ROT}><AlarmClock /></Editable>
+        <Editable name="mug" position={MUG_POS} rotation={MUG_ROT}><Mug /></Editable>
         <Editable name="rubiks" position={RUBIKS_POS}><RubiksCube /></Editable>
 
         <CameraRig />

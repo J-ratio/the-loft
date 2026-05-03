@@ -13,8 +13,10 @@ import { DESK_TOP_Y, DESK_BOARD_DEPTH } from './Desk'
 const DESK_X = 0
 const DESK_Z = -3.5 + DESK_BOARD_DEPTH / 2
 
-export const ALARM_CLOCK_POS: [number, number, number] = [DESK_X + 0.6, DESK_TOP_Y, DESK_Z - 0.22]
-export const MUG_POS: [number, number, number] = [DESK_X - 0.65, DESK_TOP_Y, DESK_Z + 0.05]
+export const ALARM_CLOCK_POS: [number, number, number] = [0.6, 0.85, -3.37]
+export const ALARM_CLOCK_ROT: [number, number, number] = [-3.142, 0.197, -3.142]
+export const MUG_POS: [number, number, number] = [-0.65, 0.85, -3.1]
+export const MUG_ROT: [number, number, number] = [0, 0, -0.291]
 export const RUBIKS_POS: [number, number, number] = [DESK_X + 0.35, DESK_TOP_Y, DESK_Z + 0.12]
 
 function AssetAtOrigin({
@@ -39,7 +41,7 @@ function AssetAtOrigin({
 }
 
 export const AlarmClock = () => (
-  <AssetAtOrigin url="/models/alarm_clock.glb" label="alarm_clock" rotation={[0, Math.PI + 0.2, 0]} />
+  <AssetAtOrigin url="/models/alarm_clock.glb" label="alarm_clock" />
 )
 export const Mug = () => (
   <AssetAtOrigin url="/models/mug.glb" label="mug" />
