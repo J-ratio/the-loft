@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { useEffect, useRef } from 'react'
-import type { Group } from 'three'
+import type { Group, MeshStandardMaterial, Mesh } from 'three'
 import { logBbox } from '../lib/bbox-log'
 import { DESK_TOP_Y, DESK_BOARD_DEPTH } from './Desk'
 
@@ -23,16 +23,37 @@ function AssetAtOrigin({
   url,
   label,
   rotation = [0, 0, 0],
+  patchGlass = false,
 }: {
   url: string
   label: string
   rotation?: [number, number, number]
+  /** If the asset has a translucent/glass material that renders as opaque
+   *  black due to alpha-sort issues, patch it on mount. Matches materials
+   *  whose name contains "glass" (case-insensitive). */
+  patchGlass?: boolean
 }) {
   const { scene } = useGLTF(url)
   const ref = useRef<Group>(null!)
   useEffect(() => {
     logBbox(label, ref.current)
-  }, [label])
+    if (!patchGlass) return
+    scene.traverse((obj) => {
+      const mesh = obj as Mesh
+      if (!mesh.isMesh) return
+      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+      for (const m of mats) {
+        const mat = m as MeshStandardMaterial
+        if (!mat?.name) continue
+        if (mat.name.toLowerCase().includes('glass')) {
+          mat.transparent = true
+          mat.depthWrite = false
+          mat.opacity = 0.35
+          mat.needsUpdate = true
+        }
+      }
+    })
+  }, [label, patchGlass, scene])
   return (
     <group ref={ref} rotation={rotation}>
       <primitive object={scene} />
@@ -41,7 +62,7 @@ function AssetAtOrigin({
 }
 
 export const AlarmClock = () => (
-  <AssetAtOrigin url="/models/alarm_clock.glb" label="alarm_clock" />
+  <AssetAtOrigin url="/models/alarm_clock.glb" label="alarm_clock" patchGlass />
 )
 export const Mug = () => (
   <AssetAtOrigin url="/models/mug.glb" label="mug" />
