@@ -51,7 +51,7 @@ export function Desk() {
   return (
     <group ref={ref}>
       {/* Board */}
-      <mesh castShadow receiveShadow position={[x, boardY, boardZ]}>
+      <mesh  position={[x, boardY, boardZ]}>
         <boxGeometry args={[DESK_BOARD_WIDTH, DESK_BOARD_THICKNESS, DESK_BOARD_DEPTH]} />
         <meshStandardMaterial color={boardColor} roughness={0.85} />
       </mesh>
@@ -70,7 +70,6 @@ export function Desk() {
         return (
           <group key={`chainGroup-${cx}`}>
             <mesh
-              castShadow
               position={[cx, midY, midZ]}
               rotation={[tiltX, 0, 0]}
             >

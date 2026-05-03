@@ -37,10 +37,21 @@ import { CameraRig } from './CameraRig'
  * the window mullions. Positioned where the painted sun disc lives in
  * WindowView so both align visually.
  */
+/**
+ * Sun mesh for GodRays sampling. Placed far outside the window so its
+ * angular size is small and rays converge to near-parallel shafts.
+ * `visible={false}` on the WHOLE mesh would hide it from rays too; instead
+ * we render it but set a layer so GodRays sees it and the main camera
+ * doesn't — the mesh itself is invisible from the room but the rays still
+ * compute correctly.
+ *
+ * Simplest approach: keep it visible but tiny + far. Screen-space
+ * contribution is small; rays do the heavy lifting.
+ */
 function SunMesh({ meshRef }: { meshRef: React.MutableRefObject<Mesh | null> }) {
   return (
-    <mesh ref={(m) => (meshRef.current = m)} position={[3.5, 1.9, -1.0]}>
-      <sphereGeometry args={[0.35, 32, 32]} />
+    <mesh ref={(m) => (meshRef.current = m)} position={[20, 5, -1.0]}>
+      <sphereGeometry args={[0.6, 24, 24]} />
       <meshBasicMaterial color="#fff3c8" toneMapped={false} />
     </mesh>
   )
@@ -95,7 +106,7 @@ export function Scene() {
 
         {/* Sun — low angle for long soft shadows */}
         <directionalLight
-          position={[6, 2.0, -1.0]}
+          position={[20, 5, -1.0]}
           intensity={3.0}
           color="#ffb978"
           castShadow
@@ -150,11 +161,12 @@ export function Scene() {
             />
             <GodRays
               sun={sunRef.current}
-              density={0.96}
-              decay={0.92}
-              weight={0.55}
-              exposure={0.55}
-              samples={60}
+              density={0.98}
+              decay={0.96}
+              weight={0.4}
+              exposure={0.35}
+              samples={80}
+              clampMax={1.0}
               blur
               blendFunction={BlendFunction.SCREEN}
             />

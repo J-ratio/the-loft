@@ -108,7 +108,7 @@ export function Room() {
       })()}
 
       {/* Window sill (a thicker ledge inside the room, serves as the Future anchor surface) */}
-      <mesh castShadow position={[1.65, WIN_Y_MIN, -1.0]}>
+      <mesh position={[1.65, WIN_Y_MIN, -1.0]}>
         <boxGeometry args={[0.2, 0.05, 2.05]} />
         <meshStandardMaterial color="#d8c49a" roughness={0.85} />
       </mesh>

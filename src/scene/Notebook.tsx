@@ -28,20 +28,19 @@ export function Notebook() {
   return (
     <group rotation={[0, 0.1, 0]}>
       {/* Dark book cover, sitting just above desk surface */}
-      <mesh castShadow position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.34, 0.26]} />
         <meshStandardMaterial color="#3a2618" roughness={0.8} />
       </mesh>
 
       {/* Spine — thin raised ridge between the two pages */}
-      <mesh castShadow position={[0, 0.005, 0]}>
+      <mesh position={[0, 0.005, 0]}>
         <boxGeometry args={[0.01, 0.01, 0.24]} />
         <meshStandardMaterial color="#2a1810" roughness={0.7} />
       </mesh>
 
       {/* Left page */}
       <mesh
-        castShadow
         position={[-0.085, 0.003, 0]}
         rotation={[-Math.PI / 2, 0, -0.04]}
         onPointerOver={(e) => {
@@ -67,7 +66,6 @@ export function Notebook() {
 
       {/* Right page */}
       <mesh
-        castShadow
         position={[0.085, 0.003, 0]}
         rotation={[-Math.PI / 2, 0, 0.04]}
         onPointerOver={(e) => {
