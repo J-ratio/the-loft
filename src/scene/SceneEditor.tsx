@@ -89,8 +89,10 @@ export function SceneEditor() {
         makeDefault
         minDistance={0.3}
         maxDistance={30}
-        enableDamping
-        dampingFactor={0.08}
+        enableDamping={false}
+        rotateSpeed={0.5}
+        panSpeed={0.8}
+        zoomSpeed={0.8}
         enablePan
       />
       {selectedObj && (
