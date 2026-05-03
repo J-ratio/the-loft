@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { Vector3 } from 'three'
 import { useLoftStore } from '../state/store'
 import { getAnchor, type CameraPose } from '../anchors'
-import { isDebugMode } from '../lib/debug'
+import { isDebugMode, isEditMode } from '../lib/debug'
 
 // Home: camera near left wall / front, diagonal view down the long room.
 const HOME_POSE: CameraPose = {
@@ -44,7 +44,7 @@ export function CameraRig() {
   const { camera } = useThree()
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
   const lookRef = useRef(new Vector3(...HOME_POSE.lookAt))
-  const debug = isDebugMode()
+  const debug = isDebugMode() || isEditMode()
   const urlPoseRef = useRef<CameraPose | null>(null)
 
   useEffect(() => {
