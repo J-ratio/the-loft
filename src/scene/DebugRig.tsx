@@ -37,11 +37,14 @@ export function DebugRig() {
     const release = (e: KeyboardEvent) => {
       keys.delete(e.key.toLowerCase())
     }
+    const onBlur = () => keys.clear()
     window.addEventListener('keydown', down)
     window.addEventListener('keyup', release)
+    window.addEventListener('blur', onBlur)
     return () => {
       window.removeEventListener('keydown', down)
       window.removeEventListener('keyup', release)
+      window.removeEventListener('blur', onBlur)
       keys.clear()
     }
   }, [])

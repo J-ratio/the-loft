@@ -5,19 +5,6 @@ import { Vector3 } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { useEditorStore } from './Editable'
 
-/**
- * Scene editor mounted when ?edit=1.
- *
- * - Click any <Editable> prop to select it — gizmo attaches.
- * - W/E/R toggles translate/rotate/scale modes.
- * - ESC deselects.
- * - WASD/QE + mouse orbit still work for navigation (like debug mode).
- * - Final transform values are shown in the HUD overlay (see EditorHud).
- *
- * Positions/rotations aren't written back to source automatically — copy
- * the HUD snippet into the relevant component file.
- */
-
 const MOVE_SPEED = 3.0
 const keys = new Set<string>()
 
@@ -33,28 +20,39 @@ export function SceneEditor() {
   const registry = useEditorStore((s) => s.registry)
   const [mode, setMode] = useState<'translate' | 'rotate' | 'scale'>('translate')
 
+  // Refs so the once-mounted listeners can read current values without re-binding.
+  const selectedRef = useRef(selected)
+  const selectRef = useRef(select)
+  selectedRef.current = selected
+  selectRef.current = select
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
       const k = e.key.toLowerCase()
       keys.add(k)
-      if (k === 'escape') select(null)
-      if (!selected) return
-      // Gizmo mode switches use 1/2/3 so they don't collide with WASD nav.
+      if (k === 'escape') selectRef.current(null)
+      if (!selectedRef.current) return
       if (k === '1') setMode('translate')
       if (k === '2') setMode('rotate')
       if (k === '3') setMode('scale')
     }
     const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase())
+    // Clear keys when window loses focus — otherwise holding W then
+    // alt-tabbing leaves it stuck.
+    const onBlur = () => keys.clear()
+
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('keyup', onKeyUp)
+    window.addEventListener('blur', onBlur)
     return () => {
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
+      window.removeEventListener('blur', onBlur)
       keys.clear()
     }
-  }, [selected, select])
+  }, [])
 
   useFrame((_, dt) => {
     const controls = orbit.current
@@ -99,7 +97,6 @@ export function SceneEditor() {
         <TransformControls
           object={selectedObj}
           mode={mode}
-          // Pause orbit while dragging the gizmo.
           onMouseDown={() => {
             if (orbit.current) orbit.current.enabled = false
           }}
