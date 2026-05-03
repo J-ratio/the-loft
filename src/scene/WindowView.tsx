@@ -54,11 +54,8 @@ export function WindowView() {
         </mesh>
       ))}
 
-      {/* Warm sun disc, upper-right area */}
-      <mesh position={[0.55, 0.35, 0.01]}>
-        <circleGeometry args={[0.22, 32]} />
-        <meshBasicMaterial color="#ffd895" toneMapped={false} />
-      </mesh>
+      {/* Sun disc removed — the real SunMesh in Scene.tsx renders here now
+          and drives the GodRays post effect. */}
     </group>
   )
 }
