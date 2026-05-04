@@ -3,9 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Loft</title>
+    <title>Jatin Kishnani — The Loft</title>
+    <meta name="description" content="Jatin Kishnani's personal space — a 3D developer's loft featuring writing, projects, and creative work." />
+    <meta name="author" content="Jatin Kishnani" />
+    <link rel="canonical" href="https://the-loft.vercel.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jatin Kishnani — The Loft" />
+    <meta property="og:description" content="Jatin Kishnani's personal space — a 3D developer's loft featuring writing, projects, and creative work." />
+    <meta property="og:url" content="https://the-loft.vercel.app/" />
+    <meta property="og:site_name" content="Jatin Kishnani — The Loft" />
+    <meta property="og:image" content="https://the-loft.vercel.app/og-image.png" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jatin Kishnani — The Loft" />
+    <meta name="twitter:description" content="Jatin Kishnani's personal space — a 3D developer's loft featuring writing, projects, and creative work." />
+    <meta name="twitter:image" content="https://the-loft.vercel.app/og-image.png" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Jatin Kishnani — The Loft",
+          "url": "https://the-loft.vercel.app/",
+          "description": "Jatin Kishnani's personal space — a 3D developer's loft featuring writing, projects, and creative work.",
+          "author": { "@id": "#jatin" }
+        },
+        {
+          "@type": "Person",
+          "@id": "#jatin",
+          "name": "Jatin Kishnani",
+          "url": "https://the-loft.vercel.app/",
+          "sameAs": []
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
+    <noscript>
+      <h1>Jatin Kishnani — The Loft</h1>
+      <p>Jatin Kishnani's personal space — a 3D developer's loft featuring writing, projects, and creative work.</p>
+      <p><a href="/blog">Read the blog</a></p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

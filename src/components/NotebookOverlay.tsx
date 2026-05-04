@@ -58,9 +58,14 @@ function FlipBook() {
     const pages = container.querySelectorAll('.page')
     if (pages.length === 0) return
 
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const pageWidth = Math.min(Math.floor(vw * 0.38), 550)
+    const pageHeight = Math.min(Math.floor(vh * 0.8), 720)
+
     const pf = new PageFlip(container, {
-      width: 340,
-      height: 460,
+      width: pageWidth,
+      height: pageHeight,
       showCover: true,
       maxShadowOpacity: 0.3,
       mobileScrollSupport: false,
@@ -113,7 +118,7 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
         {/* Emboss border */}
         <div className="absolute inset-4 border border-amber-700/40 rounded-sm" />
         <div className="absolute inset-6 border border-amber-800/30 rounded-sm" />
-        <div className="text-2xl font-serif tracking-wide text-amber-200/90">Journal</div>
+        <div className="text-4xl font-serif tracking-wide text-amber-200/90">Journal</div>
         <div className="text-[10px] font-mono mt-3 text-amber-400/50 tracking-widest uppercase">slide to open →</div>
         {/* Strap detail */}
         <div className="absolute right-6 top-0 bottom-0 w-2 bg-amber-950/60" />
@@ -125,17 +130,17 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
   // TOC page
   pages.push(
     <div key="toc" className="page">
-      <div className="h-full p-6 bg-transparent overflow-hidden">
-        <div className="text-xs font-mono text-amber-700 tracking-widest mb-4">CONTENTS</div>
-        <ul className="space-y-3" data-no-flip>
+      <div className="h-full p-8 bg-transparent overflow-hidden">
+        <div className="text-base font-mono text-amber-700 tracking-widest mb-6">CONTENTS</div>
+        <ul className="space-y-5" data-no-flip>
           {posts.map((p) => (
             <li key={p.slug}>
               <button
                 onClick={() => onFlipTo(p.slug)}
-                className="text-left w-full hover:bg-amber-100 rounded px-2 py-1 transition-colors"
+                className="text-left w-full hover:bg-amber-100 rounded px-3 py-2 transition-colors"
               >
-                <div className="text-sm font-serif text-amber-950">{p.title}</div>
-                <div className="text-xs font-mono text-amber-600">{p.date}</div>
+                <div className="text-lg font-serif text-amber-950">{p.title}</div>
+                <div className="text-base font-mono text-amber-600">{p.date}</div>
               </button>
             </li>
           ))}
@@ -165,9 +170,9 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
     indexMap[post.slug] = pages.length
     pages.push(
       <div key={`${post.slug}-title`} className="page">
-        <div className="h-full p-6 bg-transparent flex flex-col justify-center">
-          <div className="text-lg font-serif text-amber-950 mb-2">{post.title}</div>
-          <div className="text-xs font-mono text-amber-600 mb-4">{post.date}</div>
+        <div className="h-full p-8 bg-transparent flex flex-col justify-center">
+          <div className="text-2xl font-serif text-amber-950 mb-3">{post.title}</div>
+          <div className="text-base font-mono text-amber-600 mb-4">{post.date}</div>
           <div className="w-12 h-px bg-amber-300" />
         </div>
       </div>
@@ -177,8 +182,8 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
     for (let i = 0; i < chunks.length; i++) {
       pages.push(
         <div key={`${post.slug}-${i}`} className="page">
-          <div className="h-full p-5 bg-transparent overflow-hidden relative">
-            <div className="prose prose-sm prose-amber max-w-none text-amber-950 text-xs leading-relaxed font-serif">
+          <div className="h-full p-8 bg-transparent overflow-hidden relative">
+            <div className="prose prose-lg prose-amber max-w-none text-amber-950 text-base leading-relaxed font-serif">
               <ReactMarkdown>{chunks[i]}</ReactMarkdown>
             </div>
             <div className="absolute bottom-3 right-4 text-[10px] font-mono text-amber-300">
@@ -217,7 +222,7 @@ function paginateContent(markdown: string): string[] {
 
   for (const para of paragraphs) {
     const combined = current ? current + '\n\n' + para : para
-    if (combined.length > 500 && current) {
+    if (combined.length > 600 && current) {
       pages.push(current)
       current = para
     } else {
