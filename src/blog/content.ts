@@ -44,7 +44,7 @@ function parsePost(path: string, raw: string): Post {
 
 const posts: Post[] = Object.entries(rawModules)
   .map(([path, raw]) => parsePost(path, raw))
-  .sort((a, b) => (a.date < b.date ? 1 : -1))
+  .sort((a, b) => (a.date < b.date ? -1 : 1))
 
 export function listPosts(): Post[] {
   return posts

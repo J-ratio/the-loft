@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import type { Group, Object3D, Vector3Tuple } from 'three'
 import { create } from 'zustand'
+import { isEditMode } from '../lib/debug'
 
 /**
  * Editable wraps a prop group and registers it with the editor store so
@@ -67,10 +68,10 @@ export function Editable({
       position={position}
       rotation={rotation}
       scale={scale}
-      onClick={(e) => {
+      onClick={isEditMode() ? (e) => {
         e.stopPropagation()
         select(name)
-      }}
+      } : undefined}
     >
       {children}
     </group>

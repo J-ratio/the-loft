@@ -20,8 +20,8 @@ export function Desk() {
   const ref = useRef<Group>(null!)
   useEffect(() => logBbox('desk_board', ref.current), [])
 
-  // Board center Z (board's back flush to back wall at z=-3.5)
-  const boardZ = -3.5 + DESK_BOARD_DEPTH / 2
+  // Board center Z (board's back flush to back wall front face at z=-3.45)
+  const boardZ = -3.45 + DESK_BOARD_DEPTH / 2
   const boardY = DESK_TOP_Y - DESK_BOARD_THICKNESS / 2
 
   // Chain anchor points: on the wall, above the board's back edge.
@@ -31,7 +31,7 @@ export function Desk() {
   const leftChainX = x - DESK_BOARD_WIDTH / 2 + 0.06
   const rightChainX = x + DESK_BOARD_WIDTH / 2 - 0.06
   const wallMountY = DESK_TOP_Y + 0.55
-  const wallMountZ = -3.49 // just in front of wall plane
+  const wallMountZ = -3.44 // just in front of wall
 
   // Chain vector from board front-corner UP-AND-BACK to wall mount.
   const dy = wallMountY - DESK_TOP_Y
@@ -91,7 +91,7 @@ export function Desk() {
       })}
 
       {/* Wall-mount strip behind the board */}
-      <mesh position={[x, boardY, -3.495]}>
+      <mesh position={[x, boardY, -3.44]}>
         <boxGeometry args={[DESK_BOARD_WIDTH + 0.02, DESK_BOARD_THICKNESS + 0.01, 0.01]} />
         <meshStandardMaterial color="#3a2618" roughness={0.9} />
       </mesh>

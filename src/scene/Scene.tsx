@@ -1,8 +1,9 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { ACESFilmicToneMapping, PCFSoftShadowMap } from 'three'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { KernelSize } from 'postprocessing'
+import { ACESFilmicToneMapping, PCFSoftShadowMap, HalfFloatType } from 'three'
 import { useEffect, useRef } from 'react'
-import type { Mesh } from 'three'
-import { Link } from 'react-router-dom'
+import type { DirectionalLight } from 'three'
 import { useLoftStore } from '../state/store'
 import { isDebugMode, isEditMode } from '../lib/debug'
 import { DebugRig } from './DebugRig'
@@ -28,34 +29,11 @@ import { Corkboard } from './Corkboard'
 import { Notebook, NOTEBOOK_POS } from './Notebook'
 import { WindowView } from './WindowView'
 import { CameraRig } from './CameraRig'
+import { Dreamcatcher, DREAMCATCHER_POS, DREAMCATCHER_ROT, DREAMCATCHER_SCALE } from './Dreamcatcher'
+import { Headphones, HEADPHONES_POS, HEADPHONES_ROT, HEADPHONES_SCALE } from './Headphones'
+import { Sketchpad, SKETCHPAD_POS } from './Sketchpad'
 
-/**
- * Sun: a real emissive sphere sitting outside the window. The GodRays
- * post-effect samples this mesh to compute light shafts streaming through
- * the window mullions. Positioned where the painted sun disc lives in
- * WindowView so both align visually.
- */
-/**
- * Sun mesh for GodRays sampling. Placed far outside the window so its
- * angular size is small and rays converge to near-parallel shafts.
- * `visible={false}` on the WHOLE mesh would hide it from rays too; instead
- * we render it but set a layer so GodRays sees it and the main camera
- * doesn't — the mesh itself is invisible from the room but the rays still
- * compute correctly.
- *
- * Simplest approach: keep it visible but tiny + far. Screen-space
- * contribution is small; rays do the heavy lifting.
- */
-function SunMesh({ meshRef }: { meshRef: React.MutableRefObject<Mesh | null> }) {
-  return (
-    <mesh ref={(m) => (meshRef.current = m)} position={[8, 2.6, -0.6]}>
-      <sphereGeometry args={[0.5, 24, 24]} />
-      <meshBasicMaterial color="#fff3c8" toneMapped={false} />
-    </mesh>
-  )
-}
 
-/** Switch the shadow map type to PCFSoft for softer/longer shadows. */
 function SoftShadows() {
   const { gl } = useThree()
   useEffect(() => {
@@ -65,22 +43,40 @@ function SoftShadows() {
   return null
 }
 
-/**
- * Scene root. Long narrow upper-loft (X=3.5 × Z=5), window on right wall,
- * sun streams in from +X, camera on LEFT.
- *
- * Lighting = INFP golden-hour day:
- *  - warm low-angle directional sun (long soft shadows via PCFSoft)
- *  - warm hemisphere + cool bounce for warm/cool tension
- *  - real sun sphere + GodRays post-effect for volumetric light shafts
- *  - Bloom on bright pixels for window halo + glow
- */
+function SunLight() {
+  const lightRef = useRef<DirectionalLight>(null)
+  const { scene } = useThree()
+  useEffect(() => {
+    if (!lightRef.current) return
+    lightRef.current.target.position.set(-1.5, 0, -2.0)
+    scene.add(lightRef.current.target)
+    return () => { scene.remove(lightRef.current!.target) }
+  }, [scene])
+  return (
+    <directionalLight
+      ref={lightRef}
+      position={[6, 2.5, -0.8]}
+      intensity={3.5}
+      color="#ffb978"
+      castShadow
+      shadow-mapSize={[4096, 4096]}
+      shadow-camera-left={-6}
+      shadow-camera-right={6}
+      shadow-camera-top={6}
+      shadow-camera-bottom={-6}
+      shadow-camera-near={0.1}
+      shadow-camera-far={20}
+      shadow-bias={-0.0003}
+      shadow-radius={2}
+    />
+  )
+}
+
 export function Scene() {
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
   const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
   const debug = isDebugMode()
   const edit = isEditMode()
-  const sunRef = useRef<Mesh | null>(null)
 
   return (
     <div className="fixed inset-0 bg-neutral-900">
@@ -96,34 +92,14 @@ export function Scene() {
         <hemisphereLight args={['#ffcf8a', '#2a3550', 0.45]} />
         <ambientLight intensity={0.12} color="#ffe4c4" />
 
-        {/* Sun — low angle for long soft shadows */}
-        <directionalLight
-          position={[8, 2.6, -0.6]}
-          intensity={3.0}
-          color="#ffb978"
-          castShadow
-          shadow-mapSize={[4096, 4096]}
-          shadow-camera-left={-4}
-          shadow-camera-right={4}
-          shadow-camera-top={4}
-          shadow-camera-bottom={-4}
-          shadow-bias={-0.0003}
-          shadow-radius={6}
-        />
+        <SunLight />
         <pointLight
           position={[1.4, 1.5, -1.0]}
           intensity={0.7}
           color="#ffc88a"
           distance={5}
         />
-        <pointLight
-          position={[-1.6, 1.8, -1.0]}
-          intensity={0.35}
-          color="#8aa8d6"
-          distance={6}
-        />
 
-        <SunMesh meshRef={sunRef} />
 
         <WindowView />
         <Room />
@@ -137,30 +113,27 @@ export function Scene() {
         <Editable name="alarm_clock" position={ALARM_CLOCK_POS} rotation={ALARM_CLOCK_ROT}><AlarmClock /></Editable>
         <Editable name="mug" position={MUG_POS} rotation={MUG_ROT}><Mug /></Editable>
         <Editable name="rubiks" position={RUBIKS_POS}><RubiksCube /></Editable>
+        <Editable name="dreamcatcher" position={DREAMCATCHER_POS} rotation={DREAMCATCHER_ROT} scale={DREAMCATCHER_SCALE}><Dreamcatcher /></Editable>
+        <Editable name="headphones" position={HEADPHONES_POS} rotation={HEADPHONES_ROT} scale={HEADPHONES_SCALE}><Headphones /></Editable>
+        <Editable name="sketchpad" position={SKETCHPAD_POS}><Sketchpad /></Editable>
 
         <CameraRig />
         {debug && <DebugRig />}
         {edit && <SceneEditor />}
 
-        {/* Postprocessing disabled — EffectComposer + Bloom was locking up
-            the MCP browser. Re-enable after investigating perf. */}
+        <EffectComposer multisampling={0} frameBufferType={HalfFloatType}>
+          <Bloom
+            intensity={0.8}
+            luminanceThreshold={0.7}
+            luminanceSmoothing={0.3}
+            kernelSize={KernelSize.LARGE}
+            mipmapBlur
+          />
+        </EffectComposer>
       </Canvas>
 
       {edit && <EditorHud />}
 
-      <div className="fixed top-4 left-4 z-20 text-neutral-100 pointer-events-none">
-        <div className="text-xs font-mono tracking-widest text-neutral-400">
-          THE LOFT
-        </div>
-      </div>
-      <div className="fixed bottom-4 right-4 z-20 pointer-events-auto">
-        <Link
-          to="/blog"
-          className="text-xs font-mono text-neutral-400 hover:text-neutral-100 bg-neutral-900/70 border border-neutral-700 rounded px-3 py-1.5 backdrop-blur"
-        >
-          read as plain text →
-        </Link>
-      </div>
       {!activeAnchor && !debug && !edit && (
         <div className="fixed bottom-4 left-4 z-20 text-xs font-mono text-neutral-500 pointer-events-none">
           click the notebook on the desk

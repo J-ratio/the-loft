@@ -31,10 +31,10 @@ const PHOTOS: Photo[] = [
 ]
 
 export function Corkboard() {
-  // Back wall at z = -3.5 (solid). Board center: (0, 1.95, -3.49), 1.8w × 0.9h.
+  // Back wall front face at z = -3.45. Board center: (0, 1.95, -3.43), 1.8w × 0.9h.
   const boardW = 1.8
   const boardH = 0.9
-  const boardZ = -3.49
+  const boardZ = -3.43
   const boardY = 1.95
 
   return (

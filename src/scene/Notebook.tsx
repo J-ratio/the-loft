@@ -1,188 +1,90 @@
-import { Html } from '@react-three/drei'
-import ReactMarkdown from 'react-markdown'
 import { useState } from 'react'
 import { useLoftStore } from '../state/store'
-import { listPosts, getPost } from '../blog/content'
 
 export const NOTEBOOK_POS: [number, number, number] = [0, 0.852, -3.15]
 
 /**
- * Open notebook on the desk — the Blog anchor.
- *
- * Primitive: two slightly-tilted page planes + cover + spine.
- * Clicking the notebook opens the Blog: the camera dollies to the desk
- * focus pose, and blog content renders AS HTML attached to the right page.
- *
- * Position: on top of the desk_set (desk at z=-3.15, top ~y=0.73).
+ * Vintage leather journal on the desk — the Blog anchor.
+ * Dark brown leather with strap and brass clasp.
  */
 export function Notebook() {
-  const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
   const activeAnchor = useLoftStore((s) => s.activeAnchor)
-  const readingSlug = useLoftStore((s) => s.readingSlug)
-  const setReadingSlug = useLoftStore((s) => s.setReadingSlug)
+  const setActiveAnchor = useLoftStore((s) => s.setActiveAnchor)
+  const setNotebookOpen = useLoftStore((s) => s.setNotebookOpen)
   const [hovered, setHovered] = useState(false)
 
-  const open = activeAnchor === 'desk'
-  const reading = readingSlug ? getPost(readingSlug) : undefined
+  const handleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation()
+    if (activeAnchor !== 'desk') {
+      setActiveAnchor('desk')
+    } else {
+      setNotebookOpen(true)
+    }
+  }
 
   return (
     <group rotation={[0, 0.1, 0]}>
-      {/* Dark book cover, sitting just above desk surface */}
-      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.34, 0.26]} />
-        <meshStandardMaterial color="#3a2618" roughness={0.8} />
-      </mesh>
-
-      {/* Spine — thin raised ridge between the two pages */}
-      <mesh position={[0, 0.005, 0]}>
-        <boxGeometry args={[0.01, 0.01, 0.24]} />
-        <meshStandardMaterial color="#2a1810" roughness={0.7} />
-      </mesh>
-
-      {/* Left page */}
+      {/* Click target */}
       <mesh
-        position={[-0.085, 0.003, 0]}
-        rotation={[-Math.PI / 2, 0, -0.04]}
-        onPointerOver={(e) => {
-          e.stopPropagation()
-          setHovered(true)
-          document.body.style.cursor = 'pointer'
-        }}
-        onPointerOut={() => {
-          setHovered(false)
-          document.body.style.cursor = 'auto'
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-          if (!open) setActiveAnchor('desk')
-        }}
+        position={[0, 0.015, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer' }}
+        onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto' }}
+        onClick={handleClick}
       >
-        <planeGeometry args={[0.15, 0.22]} />
+        <planeGeometry args={[0.3, 0.35]} />
+        <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
+      </mesh>
+
+      {/* Main leather body — the whole journal as a box */}
+      <mesh position={[0, 0.008, 0]}>
+        <boxGeometry args={[0.18, 0.016, 0.25]} />
         <meshStandardMaterial
-          color={hovered && !open ? '#fff5e0' : '#f0e4c8'}
-          roughness={0.95}
+          color={hovered ? '#6b4226' : '#4a2a16'}
+          roughness={0.7}
+          metalness={0.02}
         />
       </mesh>
 
-      {/* Right page */}
-      <mesh
-        position={[0.085, 0.003, 0]}
-        rotation={[-Math.PI / 2, 0, 0.04]}
-        onPointerOver={(e) => {
-          e.stopPropagation()
-          setHovered(true)
-          document.body.style.cursor = 'pointer'
-        }}
-        onPointerOut={() => {
-          setHovered(false)
-          document.body.style.cursor = 'auto'
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-          if (!open) setActiveAnchor('desk')
-        }}
-      >
-        <planeGeometry args={[0.15, 0.22]} />
+      {/* Page edges — thin cream line visible from the side */}
+      <mesh position={[0.005, 0.008, 0]}>
+        <boxGeometry args={[0.155, 0.010, 0.23]} />
+        <meshStandardMaterial color="#f0e8d4" roughness={0.95} />
+      </mesh>
+
+      {/* Top cover (slightly raised, darker leather) */}
+      <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.18, 0.25]} />
         <meshStandardMaterial
-          color={hovered && !open ? '#fff5e0' : '#f0e4c8'}
-          roughness={0.95}
+          color={hovered ? '#5a3520' : '#3d2010'}
+          roughness={0.65}
+          metalness={0.02}
         />
       </mesh>
 
-      {/* In-scene blog content — HTML plane positioned just above the pages,
-          rendered with drei's <Html transform>. */}
-      {open && (
-        <Html
-          transform
-          position={[0, 0.006, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          scale={0.003}
-          style={{ width: '120px', pointerEvents: 'auto' }}
-        >
-          <div
-            className="font-serif text-amber-950"
-            onClick={(e) => e.stopPropagation()}
-            style={{ padding: '2px 6px' }}
-          >
-            {!reading && <NotebookIndex onSelect={setReadingSlug} />}
-            {reading && (
-              <NotebookPost
-                post={reading}
-                onBack={() => setReadingSlug(null)}
-              />
-            )}
-          </div>
-        </Html>
-      )}
+      {/* Emboss border on cover */}
+      <mesh position={[0, 0.0155, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[0.15, 0.21]} />
+        <meshStandardMaterial color="#4a2818" roughness={0.7} />
+      </mesh>
+
+      {/* Strap across */}
+      <mesh position={[0.05, 0.017, 0]}>
+        <boxGeometry args={[0.012, 0.003, 0.25]} />
+        <meshStandardMaterial color="#2a1408" roughness={0.6} />
+      </mesh>
+
+      {/* Brass clasp */}
+      <mesh position={[0.05, 0.018, -0.09]}>
+        <boxGeometry args={[0.018, 0.004, 0.014]} />
+        <meshStandardMaterial color="#c4964a" roughness={0.25} metalness={0.7} />
+      </mesh>
+
+      {/* Spine (darker strip on left edge) */}
+      <mesh position={[-0.088, 0.008, 0]}>
+        <boxGeometry args={[0.012, 0.018, 0.25]} />
+        <meshStandardMaterial color="#2a1408" roughness={0.7} />
+      </mesh>
     </group>
-  )
-}
-
-function NotebookIndex({ onSelect }: { onSelect: (slug: string) => void }) {
-  const posts = listPosts()
-  return (
-    <div>
-      <div style={{ fontSize: '5px', letterSpacing: '0.1em', marginBottom: '4px', fontFamily: 'monospace', color: '#8a5a2c' }}>
-        JOURNAL
-      </div>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {posts.map((p) => (
-          <li key={p.slug} style={{ marginBottom: '3px' }}>
-            <button
-              onClick={() => onSelect(p.slug)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-                textAlign: 'left',
-                fontFamily: 'inherit',
-                color: 'inherit',
-                cursor: 'pointer',
-              }}
-            >
-              <div style={{ fontSize: '6px', lineHeight: 1.2 }}>{p.title}</div>
-              <div style={{ fontSize: '3.5px', fontFamily: 'monospace', color: '#a87c50' }}>{p.date}</div>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-function NotebookPost({
-  post,
-  onBack,
-}: {
-  post: { slug: string; title: string; date: string; body: string }
-  onBack: () => void
-}) {
-  return (
-    <div>
-      <button
-        onClick={onBack}
-        style={{
-          background: 'transparent',
-          border: 'none',
-          padding: 0,
-          fontSize: '3.5px',
-          fontFamily: 'monospace',
-          color: '#8a5a2c',
-          cursor: 'pointer',
-          marginBottom: '3px',
-        }}
-      >
-        ← back
-      </button>
-      <div style={{ fontSize: '6px', lineHeight: 1.2, marginBottom: '2px', fontWeight: 'bold' }}>
-        {post.title}
-      </div>
-      <div style={{ fontSize: '3.5px', fontFamily: 'monospace', color: '#a87c50', marginBottom: '3px' }}>
-        {post.date}
-      </div>
-      <div style={{ fontSize: '3.5px', lineHeight: 1.35 }}>
-        <ReactMarkdown>{post.body}</ReactMarkdown>
-      </div>
-    </div>
   )
 }

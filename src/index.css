@@ -21,3 +21,25 @@ body,
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Page flip notebook */
+.notebook-flip {
+  width: 680px;
+  height: 460px;
+}
+.notebook-flip .page {
+  background: linear-gradient(160deg, #f8f0e0 0%, #efe4d0 40%, #e8dbc4 100%);
+  border-right: 1px solid #c8b898;
+  box-shadow: inset -3px 0 6px rgba(80, 50, 20, 0.08), inset 0 0 20px rgba(120, 80, 30, 0.04);
+}
+.notebook-flip .page-cover {
+  background: #5c3a1e;
+  border-right: none;
+  box-shadow: none;
+}
+.notebook-flip .stf__parent {
+  overflow: visible !important;
+}
+.notebook-flip .stf__wrapper {
+  pointer-events: auto !important;
+}
