@@ -59,13 +59,13 @@ function SunLight() {
       intensity={3.5}
       color="#ffb978"
       castShadow
-      shadow-mapSize={[4096, 4096]}
-      shadow-camera-left={-6}
-      shadow-camera-right={6}
-      shadow-camera-top={6}
-      shadow-camera-bottom={-6}
-      shadow-camera-near={0.1}
-      shadow-camera-far={20}
+      shadow-mapSize={[2048, 2048]}
+      shadow-camera-left={-4}
+      shadow-camera-right={4}
+      shadow-camera-top={4}
+      shadow-camera-bottom={-4}
+      shadow-camera-near={0.5}
+      shadow-camera-far={15}
       shadow-bias={-0.0003}
       shadow-radius={2}
     />
@@ -82,8 +82,10 @@ export function Scene() {
     <div className="fixed inset-0 bg-neutral-900">
       <Canvas
         shadows
+        dpr={[1, 1.5]}
+        performance={{ min: 0.5 }}
         camera={{ position: [-1.3, 1.5, 0.2], fov: 48 }}
-        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
+        gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.0, powerPreference: 'high-performance' }}
         onPointerMissed={() => {
           if (activeAnchor) setActiveAnchor(null)
         }}
@@ -123,10 +125,10 @@ export function Scene() {
 
         <EffectComposer multisampling={0} frameBufferType={HalfFloatType}>
           <Bloom
-            intensity={0.8}
-            luminanceThreshold={0.7}
+            intensity={0.6}
+            luminanceThreshold={0.75}
             luminanceSmoothing={0.3}
-            kernelSize={KernelSize.LARGE}
+            kernelSize={KernelSize.MEDIUM}
             mipmapBlur
           />
         </EffectComposer>

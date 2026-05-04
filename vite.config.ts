@@ -14,4 +14,13 @@ export default defineConfig({
   optimizeDeps: {
     include: ['buffer'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing', 'postprocessing'],
+        },
+      },
+    },
+  },
 })

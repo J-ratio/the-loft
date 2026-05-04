@@ -32,6 +32,7 @@ function FlipBook() {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const flipRef = useRef<PageFlip | null>(null)
   const [ready, setReady] = useState(false)
+  const [initialized, setInitialized] = useState(false)
   const pageIndexMap = useRef<Record<string, number>>({})
   const blockFlipRef = useRef(false)
 
@@ -81,6 +82,7 @@ function FlipBook() {
 
     pf.loadFromHTML(pages as unknown as HTMLElement[])
     flipRef.current = pf
+    setInitialized(true)
 
     return () => {
       pf.destroy()
@@ -99,7 +101,7 @@ function FlipBook() {
   pageIndexMap.current = indexMap
 
   return (
-    <div ref={wrapperRef} className="notebook-flip">
+    <div ref={wrapperRef} className="notebook-flip" style={{ visibility: initialized ? 'visible' : 'hidden' }}>
       {allPages}
     </div>
   )
