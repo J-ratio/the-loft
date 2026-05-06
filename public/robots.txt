@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://the-loft.vercel.app/sitemap.xml
+Sitemap: https://jatinkishnani.vercel.app/sitemap.xml

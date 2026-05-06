@@ -16,8 +16,8 @@ export function BlogPostPage() {
           <meta name="description" content={`${post.title} — a blog post by Jatin Kishnani.`} />
           <meta property="og:title" content={`${post.title} — Jatin Kishnani`} />
           <meta property="og:description" content={`${post.title} — a blog post by Jatin Kishnani.`} />
-          <meta property="og:url" content={`https://the-loft.vercel.app/blog/${post.slug}`} />
-          <link rel="canonical" href={`https://the-loft.vercel.app/blog/${post.slug}`} />
+          <meta property="og:url" content={`https://jatinkishnani.vercel.app/blog/${post.slug}`} />
+          <link rel="canonical" href={`https://jatinkishnani.vercel.app/blog/${post.slug}`} />
         </Helmet>
       )}
       <div className="max-w-2xl mx-auto">

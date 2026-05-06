@@ -12,8 +12,8 @@ export function BlogIndexPage() {
         <meta name="description" content="Writing and thoughts by Jatin Kishnani." />
         <meta property="og:title" content="Blog — Jatin Kishnani" />
         <meta property="og:description" content="Writing and thoughts by Jatin Kishnani." />
-        <meta property="og:url" content="https://the-loft.vercel.app/blog" />
-        <link rel="canonical" href="https://the-loft.vercel.app/blog" />
+        <meta property="og:url" content="https://jatinkishnani.vercel.app/blog" />
+        <link rel="canonical" href="https://jatinkishnani.vercel.app/blog" />
       </Helmet>
       <div className="max-w-2xl mx-auto">
         <nav className="mb-10 flex items-center justify-between text-xs font-mono text-neutral-500">
