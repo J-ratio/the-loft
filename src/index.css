@@ -24,13 +24,28 @@ body,
 
 /* Page flip notebook */
 .notebook-flip {
-  width: 680px;
-  height: 460px;
+  width: 780px;
+  height: 540px;
 }
 .notebook-flip .page {
-  background: linear-gradient(160deg, #f8f0e0 0%, #efe4d0 40%, #e8dbc4 100%);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 31px,
+      rgba(180, 160, 130, 0.35) 31px,
+      rgba(180, 160, 130, 0.35) 32px
+    ),
+    linear-gradient(160deg, #f8f0e0 0%, #efe4d0 40%, #e8dbc4 100%);
+  background-size: 100% 32px, 100% 100%;
+  background-position: 0 65px, 0 0;
   border-right: 1px solid #c8b898;
   box-shadow: inset -3px 0 6px rgba(80, 50, 20, 0.08), inset 0 0 20px rgba(120, 80, 30, 0.04);
+}
+.notebook-flip .page.page-unruled {
+  background: linear-gradient(160deg, #f8f0e0 0%, #efe4d0 40%, #e8dbc4 100%);
+  background-size: 100% 100%;
+  background-position: 0 0;
 }
 .notebook-flip .page-cover {
   background: #5c3a1e;

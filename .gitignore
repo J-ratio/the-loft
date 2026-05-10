@@ -15,9 +15,13 @@ website.md
 # raw 3D assets — never commit; normalized outputs go in public/models/
 assets/raw/
 
+# reference text (scraped blog posts)
+ref_text/
+
 # editor
 .vscode
 .idea
 
 # dev screenshots (Claude Code verification artifacts)
 .claude/shots/
+.vercel

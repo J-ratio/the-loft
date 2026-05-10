@@ -61,8 +61,8 @@ function FlipBook() {
 
     const vw = window.innerWidth
     const vh = window.innerHeight
-    const pageWidth = Math.min(Math.floor(vw * 0.38), 550)
-    const pageHeight = Math.min(Math.floor(vh * 0.8), 720)
+    const pageWidth = Math.min(Math.floor(vw * 0.42), 620)
+    const pageHeight = Math.min(Math.floor(vh * 0.82), 780)
 
     const pf = new PageFlip(container, {
       width: pageWidth,
@@ -131,7 +131,7 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
 
   // TOC page
   pages.push(
-    <div key="toc" className="page">
+    <div key="toc" className="page page-unruled">
       <div className="h-full p-8 bg-transparent overflow-hidden">
         <div className="text-base font-mono text-amber-700 tracking-widest mb-6">CONTENTS</div>
         <ul className="space-y-5" data-no-flip>
@@ -162,7 +162,7 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
     const currentIdx = pages.length
     if (currentIdx % 2 === 0) {
       pages.push(
-        <div key={`${post.slug}-sep`} className="page">
+        <div key={`${post.slug}-sep`} className="page page-unruled">
           <div className="h-full bg-transparent" />
         </div>
       )
@@ -171,7 +171,7 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
     // Title page for the post
     indexMap[post.slug] = pages.length
     pages.push(
-      <div key={`${post.slug}-title`} className="page">
+      <div key={`${post.slug}-title`} className="page page-unruled">
         <div className="h-full p-8 bg-transparent flex flex-col justify-center">
           <div className="text-2xl font-serif text-amber-950 mb-3">{post.title}</div>
           <div className="text-base font-mono text-amber-600 mb-4">{post.date}</div>
@@ -184,11 +184,11 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
     for (let i = 0; i < chunks.length; i++) {
       pages.push(
         <div key={`${post.slug}-${i}`} className="page">
-          <div className="h-full p-8 bg-transparent overflow-hidden relative">
-            <div className="prose prose-lg prose-amber max-w-none text-amber-950 text-base leading-relaxed font-serif">
+          <div className="h-full px-10 py-10 bg-transparent overflow-hidden relative">
+            <div className="prose prose-lg prose-amber max-w-none text-amber-950 font-serif" style={{ fontSize: '1.05rem', lineHeight: '2rem' }}>
               <ReactMarkdown>{chunks[i]}</ReactMarkdown>
             </div>
-            <div className="absolute bottom-3 right-4 text-[10px] font-mono text-amber-300">
+            <div className="absolute bottom-4 right-5 text-[10px] font-mono text-amber-400/60">
               {i + 1}/{chunks.length}
             </div>
           </div>
@@ -201,7 +201,7 @@ function buildPages(posts: ReturnType<typeof listPosts>, onFlipTo: (slug: string
   const innerPages = pages.length - 1 // minus front cover
   if (innerPages % 2 !== 0) {
     pages.push(
-      <div key="pad" className="page">
+      <div key="pad" className="page page-unruled">
         <div className="h-full bg-transparent" />
       </div>
     )
@@ -224,7 +224,7 @@ function paginateContent(markdown: string): string[] {
 
   for (const para of paragraphs) {
     const combined = current ? current + '\n\n' + para : para
-    if (combined.length > 600 && current) {
+    if (combined.length > 1400 && current) {
       pages.push(current)
       current = para
     } else {
